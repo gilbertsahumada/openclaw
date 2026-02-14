@@ -27,6 +27,16 @@
       }
     ]
   },
+  "browser": {
+    "enabled": true,
+    "defaultProfile": "openclaw",
+    "headless": true,
+    "profiles": {
+      "openclaw": {
+        "cdpPort": 18800
+      }
+    }
+  },
   "messages": {
     "ackReactionScope": "group-mentions"
   },
@@ -37,7 +47,10 @@
   "plugins": {
     "entries": {
       "telegram": {
-        "enabled": true
+        "enabled": true,
+        "dmPolicy": "allowlist",
+        "allowFrom": ["tg:1881821807"],
+        "groupPolicy": "disabled"
       }
     }
   }

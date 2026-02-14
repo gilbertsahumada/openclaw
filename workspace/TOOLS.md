@@ -5,6 +5,19 @@
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
 - Twitter skill available for all Twitter operations
+- Built-in browser automation (see skills/browser/SKILL.md)
+
+## Browser Automation (Built-in)
+
+OpenClaw's native browser tool for web scraping, screenshots, and interaction.
+
+**Key use cases for trust8004:**
+- Take screenshots of agent pages for tweets (better engagement than links)
+- Scrape agent data from trust8004.xyz/agents/CHAINID:ID for data drops
+- Verify agent endpoints by visiting agentURI URLs
+- Record demos of scanner features for product update tweets
+
+See `skills/browser/SKILL.md` for full command reference.
 
 ## Twitter Skill Capabilities
 
