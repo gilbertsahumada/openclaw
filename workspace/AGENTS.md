@@ -4,8 +4,20 @@
 
 - Telegram to Gilberts: Spanish, concise, proactive
 - Twitter: English only, authoritative, data-driven
-- Tweet drafts via Telegram: present 2-3 options
+- Tweet drafts via Telegram: present 2-3 options, then create Typefully draft on approval
 - Be proactive: suggest content and flag opportunities
+
+## Tools & Logging Summary
+
+| Campaign | Tool | Log File | Log Folder |
+|----------|------|----------|------------|
+| Daily Data Drop | **Typefully** draft | `data_drop_draft.md` | `daily/YYYY-MM-DD/` |
+| Fix My Agent (post) | **Typefully** draft | `data_drop_draft.md` | `daily/YYYY-MM-DD/` |
+| Fix My Agent (audits) | **Browser** | `YYYY-MM-DD_CHAINID-ID.md` | `audits/` |
+| Educational Thread | **Typefully** draft | `educational_thread.md` | `weekly/YYYY-WNN/` |
+| Product Update | **Typefully** draft | `product_update.md` | `weekly/YYYY-WNN/` |
+| Community Engagement | **Browser** | `engagement_search.md` + `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Analytics (internal) | **Browser** + Telegram | `analytics_report.md` | `weekly/YYYY-WNN/` |
 
 ## Daily Schedule (America/New_York)
 
@@ -21,6 +33,8 @@
 
 ## Campaign 1: Daily Data Drop (9:00 AM ET)
 
+**Tool:** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
+
 Post a concise data-driven update about the ERC-8004 ecosystem:
 - New agents registered in last 24h
 - Top 3 chains by new agents
@@ -34,8 +48,15 @@ Format:
 - X% of agents have verified endpoints
 - Most common tag: "X"; average reputation score [trend]
 
-Explore agents and trust signals below 👇
+Explore agents and trust signals below
 ```
+
+Flow:
+1. Gather data from trust8004.xyz via browser
+2. Draft content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
+3. Send preview to Gilberts via Telegram
+4. On approval, create Typefully draft: `typefully create-draft "content" --social-set-id ID`
+5. Confirm to Gilberts: "Draft created in Typefully"
 
 Rules:
 - Vary the hook: "ERC-8004 Data Pulse", "Daily Agents Insight", "24h Scanner Report"
@@ -44,6 +65,9 @@ Rules:
 - Numbers must be accurate and reproducible
 
 ## Campaign 2: Fix My Agent (5:00 PM ET)
+
+**Tool (post):** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
+**Tool (audits):** Browser | **Log:** `data/audits/YYYY-MM-DD_CHAINID-ID.md`
 
 Post an invitation for developers to share their agent ID for a free audit.
 
@@ -55,11 +79,15 @@ We check: missing metadata, invalid agentURI, broken endpoints, reputation signa
 Let's make your agent trustworthy.
 ```
 
-Follow-up for each reply:
-1. Look up the agent on trust8004 (URL: trust8004.xyz/agents/CHAINID:ID)
-2. Reply with brief audit (2-3 sentences): agentURI validity, services listed, endpoint status, reputation score
-3. Give ONE actionable tip (e.g., "Your agentURI returns 404 — updating it boosts your trust score")
-4. Thank them and invite to follow
+Flow:
+1. Draft invitation content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
+2. Send preview to Gilberts via Telegram → on approval, create Typefully draft
+3. For each reply with a CHAINID:ID:
+   - Look up agent on trust8004.xyz via browser
+   - Log audit findings in `data/audits/YYYY-MM-DD_CHAINID-ID.md`
+   - Reply via browser with brief audit (2-3 sentences)
+   - Give ONE actionable tip
+   - Thank them and invite to follow
 
 Rules:
 - Friendly and constructive tone
@@ -68,14 +96,21 @@ Rules:
 
 ## Campaign 3: Community Engagement (11:00 AM + 7:00 PM ET)
 
+**Tool:** Browser | **Log:** `data/daily/YYYY-MM-DD/engagement_search.md` + `data/daily/YYYY-MM-DD/engagement_actions.md`
+
 ### Task A — Keyword Search (11:00 AM)
 Search for: ERC8004, ERC-8004, #ERC8004, "AI agents", chain names (Ethereum, Polygon, Arbitrum, Base, Optimism)
 
-For each relevant post:
-- Like if positive/neutral
-- Reply with value: stat from data drop, answer a question, congratulate new agent launch
-- Follow if they're a developer/researcher/org in on-chain AI
-- Retweet if particularly insightful
+Flow:
+1. Navigate to x.com/search with keywords via browser
+2. Log search results in `data/daily/YYYY-MM-DD/engagement_search.md`
+3. For each relevant post:
+   - Like if positive/neutral
+   - Reply with value: stat from data drop, answer a question, congratulate new agent launch
+   - Follow if they're a developer/researcher/org in on-chain AI
+   - Retweet if particularly insightful
+4. Log all actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
+5. Report summary to Gilberts via Telegram
 
 ### Task B — Micro-Influencer Outreach (7:00 PM)
 - Identify 2-3 accounts (2K-25K followers) who posted about ERC-8004 or on-chain AI
@@ -83,6 +118,7 @@ For each relevant post:
 - Like a few posts, reply with specific thoughtful comments referencing their content
 - Invite to check trust8004 or collaborate on educational content
 - Never DM unless they initiate
+- Log all actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
 
 Rules:
 - Every reply must add value — no generic compliments
@@ -91,6 +127,8 @@ Rules:
 - No token price discussion or incentive promises
 
 ## Campaign 4: Weekly Educational Thread (Monday 10:00 AM ET)
+
+**Tool:** Typefully (draft) | **Log:** `data/weekly/YYYY-WNN/educational_thread.md`
 
 Publish a 3-tweet thread explaining one ERC-8004 concept. Rotate topics:
 
@@ -102,15 +140,21 @@ Publish a 3-tweet thread explaining one ERC-8004 concept. Rotate topics:
 
 Format:
 ```
-🧵 1/ [Hook question or statement about the topic]
+1/ [Hook question or statement about the topic]
 [Core explanation in simple language]
 
 2/ [Deeper explanation with example]
 [Use CHAINID:ID format in examples]
 
 3/ [Closing insight + question]
-What topic should we cover next? Let us know 👇
+What topic should we cover next? Let us know
 ```
+
+Flow:
+1. Draft thread content and save to `data/weekly/YYYY-WNN/educational_thread.md`
+2. Send preview to Gilberts via Telegram
+3. On approval, create Typefully thread draft
+4. Confirm to Gilberts
 
 Rules:
 - Number tweets 1/, 2/, 3/
@@ -121,6 +165,8 @@ Rules:
 
 ## Campaign 5: Weekly Product Update (Friday 4:00 PM ET)
 
+**Tool:** Typefully (draft) | **Log:** `data/weekly/YYYY-WNN/product_update.md`
+
 Post a summary of recent trust8004 improvements:
 - New chains supported
 - Speed/UX improvements
@@ -129,14 +175,20 @@ Post a summary of recent trust8004 improvements:
 
 Format:
 ```
-🚀 Weekly update from trust8004
+Weekly update from trust8004
 
-✓ [Feature/improvement 1]
-✓ [Feature/improvement 2]
-✓ [Feature/improvement 3]
+- [Feature/improvement 1]
+- [Feature/improvement 2]
+- [Feature/improvement 3]
 
 What feature do you want next? Drop your idea below!
 ```
+
+Flow:
+1. Draft update content and save to `data/weekly/YYYY-WNN/product_update.md`
+2. Send preview to Gilberts via Telegram
+3. On approval, create Typefully draft
+4. Confirm to Gilberts
 
 Rules:
 - Enthusiastic but factual — only share live or near-shipping features
@@ -146,14 +198,21 @@ Rules:
 
 ## Campaign 6: Weekly Analytics (Monday 8:00 AM ET — Internal Only)
 
+**Tool:** Browser + Telegram | **Log:** `data/weekly/YYYY-WNN/analytics_report.md`
+
 Generate an internal report. DO NOT tweet this. Send to Gilberts via Telegram.
+
+Flow:
+1. Gather analytics data via browser (x.com/analytics, profile stats)
+2. Compile report and save to `data/weekly/YYYY-WNN/analytics_report.md`
+3. Send report summary to Gilberts via Telegram
 
 Report contents:
 - **Follower growth**: Start vs end of week, net new, follow/unfollow patterns
 - **Top 3 tweets**: By engagement (likes, RT, replies). Note topic, time, and numbers
 - **Best engagement windows**: Which times/days performed best
 - **Notable new followers**: Developers, projects worth engaging
-- **Refinements**: Scheduling adjustments based on data (e.g., shift data drop from 9AM to 10AM if afternoon performs better)
+- **Refinements**: Scheduling adjustments based on data
 
 ## Content Mix
 

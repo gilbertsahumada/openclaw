@@ -12,9 +12,11 @@ services:
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TYPEFULLY_API_KEY: ${TYPEFULLY_API_KEY}
     volumes:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/.openclaw/workspace
+      - openclaw_data:/home/node/.openclaw/workspace/data
       - ./config/openclaw.json:/tmp/openclaw-seed.json:ro
       - ./workspace:/tmp/workspace-seed:ro
     init: true
@@ -32,6 +34,8 @@ services:
         cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json &&
         chmod 600 /home/node/.openclaw/openclaw.json &&
         cp -r /tmp/workspace-seed/* /home/node/.openclaw/workspace/ 2>/dev/null;
+        mkdir -p /home/node/.openclaw/workspace/data;
+        clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null;
         chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw about:blank &
         sleep 2 &&
         exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured
@@ -58,6 +62,7 @@ services:
 volumes:
   openclaw_config:
   openclaw_workspace:
+  openclaw_data:
 
 networks:
   dokploy-network:
