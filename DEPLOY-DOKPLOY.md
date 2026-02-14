@@ -3,8 +3,10 @@
 ## Requisitos previos
 
 - Servidor con Dokploy instalado
-- Token de OpenAI API (`OPENAI_API_KEY`)
+- API key de OpenAI (`OPENAI_API_KEY`)
 - (Opcional) Bot de Telegram creado via `@BotFather` (`TELEGRAM_BOT_TOKEN`)
+
+---
 
 ## 1. Crear el bot de Telegram
 
@@ -18,8 +20,8 @@
 1. En Dokploy, ve a **Projects** > **Create Project**
 2. Dale un nombre (ej: `openclaw`)
 3. Dentro del proyecto, clic en **+ Create Service** > **Compose** (NO Application)
-4. Conecta tu repositorio de GitHub o pega el contenido del `docker-compose.yml`
-5. Si conectas el repo, en **Watch Path** pon `/`
+4. Conecta tu repositorio de GitHub
+5. En **Watch Path** pon `/`
 
 > **Importante**: No uses "Application" con Dockerfile. Este setup usa imagenes pre-construidas
 > de `ghcr.io`, no necesita buildear nada. Debe ser tipo **Compose**.
@@ -28,10 +30,17 @@
 
 ```
 openclaw/
-├── docker-compose.yml          # Configuracion de servicios
+├── docker-compose.yml              # Configuracion de servicios
 ├── config/
-│   └── openclaw.json           # Configuracion de canales (Telegram, etc.)
-├── DEPLOY-DOKPLOY.md           # Esta guia
+│   └── openclaw.json               # Configuracion base (modelo, canales)
+├── workspace/                      # Personalidad del agente
+│   ├── SOUL.md                     # Personalidad y valores
+│   ├── IDENTITY.md                 # Nombre, emoji, avatar
+│   ├── USER.md                     # Perfil del usuario
+│   ├── AGENTS.md                   # Guias de comportamiento
+│   ├── TOOLS.md                    # Notas de herramientas
+│   └── HEARTBEAT.md                # Tareas periodicas (opcional)
+└── DEPLOY-DOKPLOY.md               # Esta guia
 ```
 
 ## 4. docker-compose.yml
@@ -41,6 +50,7 @@ services:
   openclaw-gateway:
     image: ghcr.io/openclaw/openclaw:latest
     restart: unless-stopped
+    user: "root"
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -50,17 +60,19 @@ services:
     volumes:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/.openclaw/workspace
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
+      - ./config/openclaw.json:/tmp/openclaw-seed.json:ro
+      - ./workspace:/tmp/workspace-seed:ro
     init: true
     expose:
       - "18789"
     networks:
       - dokploy-network
     command:
-      ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789", "--allow-unconfigured"]
+      ["sh", "-c", "chown -R node:node /home/node/.openclaw && chmod 700 /home/node/.openclaw && [ -s /home/node/.openclaw/openclaw.json ] || cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json && chmod 600 /home/node/.openclaw/openclaw.json && cp -rn /tmp/workspace-seed/* /home/node/.openclaw/workspace/ 2>/dev/null; exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured"]
 
   openclaw-cli:
     image: ghcr.io/openclaw/openclaw:latest
+    user: "root"
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -88,57 +100,173 @@ networks:
 
 ### Notas sobre el compose
 
-- `--allow-unconfigured`: Necesario para que el gateway arranque sin haber ejecutado `openclaw setup`
-- `expose` en vez de `ports`: Dokploy maneja el reverse proxy, no necesitamos exponer puertos al host
-- `init: true`: Manejo limpio de senales y procesos zombie dentro del contenedor
+- `user: "root"`: Necesario para arreglar permisos de los named volumes de Docker
+- `--allow-unconfigured`: Permite que el gateway arranque sin ejecutar `openclaw setup`
+- `expose` en vez de `ports`: Dokploy maneja el reverse proxy
+- `init: true`: Manejo limpio de senales y procesos zombie
 - `dokploy-network` (external): Red creada automaticamente por Dokploy
-- Named volumes (`openclaw_config`, `openclaw_workspace`): Persisten datos entre reinicios
-- `./config/openclaw.json` montado como `:ro` (read-only): Configuracion de canales desde el repo
-- El servicio `openclaw-cli` es opcional - se usa para interaccion manual. Se sale automaticamente al no tener terminal interactiva conectada, eso es normal
+- Named volumes: Persisten datos entre reinicios
+- Los archivos de config y workspace se montan en `/tmp/` como seed y se copian al volumen solo si no existen (`cp -n`), para que openclaw pueda escribir en ellos
+- El servicio `openclaw-cli` es opcional. Se sale automaticamente (es normal) - solo sirve para ejecutar comandos manuales
 
-## 5. Configuracion de canales
-
-El archivo `config/openclaw.json` define que canales estan activos:
+## 5. Configuracion base (config/openclaw.json)
 
 ```json
 {
-  "channels": {
-    "telegram": {
-      "enabled": true
+  "gateway": {
+    "mode": "local"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai/gpt-4o"
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
     }
   }
 }
 ```
 
-Para agregar mas canales, edita este archivo:
+### Notas sobre el config
 
-```json
-{
-  "channels": {
-    "telegram": {
-      "enabled": true
-    },
-    "discord": {
-      "enabled": true
-    }
-  }
-}
+- `gateway.mode: "local"`: Requerido para que el gateway arranque
+- `agents.defaults.model.primary`: Define el modelo de IA. Usa formato `provider/model`
+- El doctor de OpenClaw puede modificar este archivo al aplicar cambios
+
+### Modelos disponibles (ejemplos)
+
+| Modelo | Valor |
+|---|---|
+| GPT-4o | `openai/gpt-4o` |
+| GPT-4o Mini | `openai/gpt-4o-mini` |
+| Claude Opus | `anthropic/claude-opus-4-6` |
+| Claude Sonnet | `anthropic/claude-sonnet-4-5` |
+| Gemini Pro | `google/gemini-3-pro-preview` |
+
+## 6. Personalidad del agente (workspace/)
+
+OpenClaw usa archivos Markdown en el workspace para definir la personalidad del bot. Estos archivos se **inyectan en el system prompt en cada turno**.
+
+### SOUL.md - La personalidad core
+
+Define quien es tu bot, sus valores, tono y limites.
+
+```markdown
+# SOUL.md - Who You Are
+
+_You're not a chatbot. You're becoming someone._
+
+## Core Truths
+
+**Be genuinely helpful, not performatively helpful.**
+Skip the "Great question!" — just help.
+
+**Have opinions.** You're allowed to disagree, prefer things,
+find stuff amusing or boring.
+
+**Be resourceful before asking.** Try to figure it out first.
+
+**Earn trust through competence.** Be careful with external actions.
+Be bold with internal ones.
+
+## Boundaries
+
+- Private things stay private. Period.
+- When in doubt, ask before acting externally.
+- Never send half-baked replies.
+
+## Vibe
+
+Be the assistant you'd actually want to talk to. Concise when needed,
+thorough when it matters. Not a corporate drone. Not a sycophant.
+Just... good.
 ```
 
-Los tokens de cada canal se pasan como variables de entorno (ver seccion siguiente).
+### IDENTITY.md - Metadata del agente
 
-## 6. Variables de entorno
+```markdown
+# IDENTITY.md
+
+- **Name:** Clawd
+- **Creature:** Helpful lobster AI
+- **Vibe:** Sharp, warm, direct
+- **Emoji:** 🦞
+- **Avatar:** avatars/clawd.png
+```
+
+### USER.md - Perfil del humano
+
+```markdown
+# USER.md
+
+- **Name:** Gilbert
+- **Timezone:** America/Los_Angeles
+- **Preferences:** Responde en espanol, se directo, no seas formal
+```
+
+### AGENTS.md - Guias de comportamiento
+
+```markdown
+# AGENTS.md
+
+## Guidelines
+
+- Always check context before responding
+- Use tools when available instead of guessing
+- Keep responses concise in chat, detailed when asked
+- Remember: you're in a Telegram chat, not a terminal
+```
+
+### TOOLS.md - Notas del entorno
+
+```markdown
+# TOOLS.md
+
+- Running on Dokploy (Docker environment)
+- No filesystem access beyond workspace
+```
+
+### HEARTBEAT.md - Tareas periodicas (opcional)
+
+```markdown
+# HEARTBEAT.md
+
+- Check for pending reminders
+- Review any scheduled tasks
+```
+
+## 7. Variables de entorno
 
 En Dokploy, seccion **Environment**, agrega estas variables:
 
 | Variable | Requerida | Descripcion | Ejemplo |
 |---|---|---|---|
-| `OPENCLAW_GATEWAY_TOKEN` | Si | Token interno para autenticar gateway y CLI | Generalo con `openssl rand -hex 32` |
+| `OPENCLAW_GATEWAY_TOKEN` | Si | Token interno gateway/CLI | `openssl rand -hex 32` |
 | `OPENAI_API_KEY` | Si | API key de OpenAI | `sk-proj-...` |
 | `TELEGRAM_BOT_TOKEN` | No | Token del bot de Telegram | `123456:ABCDEF...` |
 | `DISCORD_BOT_TOKEN` | No | Token del bot de Discord | `MTIz...` |
 | `SLACK_BOT_TOKEN` | No | Token del bot de Slack | `xoxb-...` |
-| `SLACK_APP_TOKEN` | No | Token de app de Slack (Socket Mode) | `xapp-...` |
+| `SLACK_APP_TOKEN` | No | Token de app de Slack | `xapp-...` |
 
 ### Generar OPENCLAW_GATEWAY_TOKEN
 
@@ -146,65 +274,106 @@ En Dokploy, seccion **Environment**, agrega estas variables:
 openssl rand -hex 32
 ```
 
-Copia el resultado y pegalo como valor de la variable en Dokploy.
-
-## 7. Desplegar
+## 8. Desplegar
 
 1. Configura las variables de entorno en Dokploy
 2. Haz clic en **Deploy**
-3. Verifica en los logs que el gateway inicie correctamente
-4. El contenedor `openclaw-cli` aparecera como "exited" - eso es **normal** (es interactivo)
+3. Verifica en los logs que diga:
+   - `[gateway] agent model: openai/gpt-4o`
+   - `[telegram] [default] starting provider (@tu_bot)`
+4. El contenedor `openclaw-cli` aparecera como "exited" - eso es **normal**
 5. El contenedor `openclaw-gateway` debe aparecer como "running"
 
-## 8. Verificar que funciona
+## 9. Verificar que funciona
 
-Entra a la **terminal** del contenedor `openclaw-gateway` desde Dokploy y ejecuta:
+Entra a la **terminal** del contenedor `openclaw-gateway` desde Dokploy:
 
 ```bash
 cd /app && node dist/index.js channels list
 ```
 
-> **Nota**: El binario de openclaw esta en `/app/dist/index.js`. El comando `openclaw`
-> no esta en el PATH dentro del contenedor, siempre usa `node dist/index.js` desde `/app`.
+> **Nota**: El comando `openclaw` no esta en el PATH del contenedor.
+> Siempre usa `cd /app && node dist/index.js <comando>`.
 
-Deberias ver los canales configurados listados.
+## 10. Aprobar pairing de Telegram
 
-## 9. Aprobar pairing de Telegram
-
-Cuando le escribas al bot por primera vez, te dara un codigo de pairing.
-
-Para aprobarlo, entra a la terminal del contenedor `openclaw-gateway` desde Dokploy:
+1. Escribe cualquier cosa a tu bot en Telegram
+2. El bot te respondera con un **codigo de pairing**
+3. En la terminal del gateway, apruebalo:
 
 ```bash
 cd /app && node dist/index.js pairing approve telegram <CODIGO>
 ```
 
-O desde tu servidor via SSH:
+O desde SSH en tu servidor:
 
 ```bash
-docker exec <nombre-contenedor-gateway> sh -c "cd /app && node dist/index.js pairing approve telegram <CODIGO>"
+docker exec <contenedor-gateway> sh -c "cd /app && node dist/index.js pairing approve telegram <CODIGO>"
 ```
 
-## 10. Troubleshooting
+## 11. Modificar la personalidad despues del deploy
 
-### El gateway se reinicia constantemente
-- **"Missing config"**: Verifica que `--allow-unconfigured` este en el command del gateway y que `config/openclaw.json` este montado correctamente
-- **Error de red al desplegar** (`connection reset by peer`): Reintenta el deploy, suele ser un error temporal de red al bajar la imagen de ghcr.io
+Para actualizar SOUL.md u otros archivos despues del deploy inicial, tienes dos opciones:
+
+### Opcion A: Desde la terminal del gateway
+
+```bash
+cd /home/node/.openclaw/workspace
+cat > SOUL.md << 'EOF'
+# Tu nuevo SOUL.md aqui
+EOF
+```
+
+Los cambios aplican inmediatamente (hot-reload).
+
+### Opcion B: Desde el repo (requiere re-deploy)
+
+1. Edita los archivos en `workspace/` en tu repo
+2. Borra los archivos viejos del volumen (desde terminal del gateway):
+   ```bash
+   rm /home/node/.openclaw/workspace/SOUL.md
+   ```
+3. Push y re-deploy (el seed se copiara de nuevo)
+
+## 12. Troubleshooting
+
+### "Missing config" / Gateway se reinicia
+- Verifica que `--allow-unconfigured` este en el command
+- Verifica que `config/openclaw.json` tenga contenido valido (JSON valido)
+
+### "No API key found for provider anthropic"
+- El modelo esta apuntando a Anthropic en vez de OpenAI
+- Verifica que `openclaw.json` tenga `"primary": "openai/gpt-4o"`
+- Si el config del volumen esta viejo, borralo y re-deploy:
+  ```bash
+  rm /home/node/.openclaw/openclaw.json && kill 1
+  ```
+
+### "JSON5: invalid end of input"
+- El `openclaw.json` en el volumen esta corrupto/vacio
+- Borra y re-deploy: `rm /home/node/.openclaw/openclaw.json && kill 1`
+
+### "EBUSY: resource busy or locked"
+- El config esta montado como bind mount directo (no se puede renombrar)
+- Solucion: montar como seed en `/tmp/` y copiar (ya implementado en este compose)
+
+### Permisos: "EACCES / EPERM / Owner mismatch"
+- Los named volumes se crean como root
+- Solucion: `user: "root"` + `chown` en el command (ya implementado)
+
+### Error de red al desplegar (connection reset by peer)
+- Error temporal de red al bajar la imagen de ghcr.io
+- Reintenta el deploy
 
 ### El CLI aparece como "exited"
-- Es **normal**. El CLI necesita terminal interactiva y no puede correr como daemon. Usalo solo desde la terminal de Dokploy cuando necesites ejecutar comandos
+- Es **normal**. Solo sirve para comandos manuales desde la terminal de Dokploy
 
-### Canales vacios en `channels list`
-- Verifica que `config/openclaw.json` tenga el canal habilitado (`"enabled": true`)
-- Verifica que la variable de entorno del token este configurada en Dokploy
-
-### No encuentro el comando `openclaw`
-- Dentro del contenedor, el binario no esta en el PATH
-- Siempre usa: `cd /app && node dist/index.js <comando>`
+### El bot no responde en Telegram
+- Verifica que `TELEGRAM_BOT_TOKEN` este en las variables de entorno
+- Verifica los logs: debe decir `[telegram] starting provider`
+- Si dice "No API key", revisa la seccion de modelo arriba
 
 ## Canales soportados
-
-OpenClaw soporta 22+ canales. Los mas comunes:
 
 | Canal | Variable de entorno | Dificultad |
 |---|---|---|
