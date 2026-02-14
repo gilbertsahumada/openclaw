@@ -54,6 +54,12 @@
     "native": "auto",
     "nativeSkills": "auto"
   },
+  "tools": {
+    "profile": "full",
+    "elevated": {
+      "enabled": true
+    }
+  },
   "plugins": {
     "entries": {
       "telegram": {
