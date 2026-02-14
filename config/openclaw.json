@@ -5,7 +5,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "openai/gpt-4.1"
+        "primary": "openai/gpt-4.1-mini"
       },
       "userTimezone": "America/New_York",
       "compaction": {
