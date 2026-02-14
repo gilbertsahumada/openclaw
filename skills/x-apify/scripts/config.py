@@ -24,6 +24,13 @@ def _resolve_skill_dir() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
+def _resolve_default_cache_dir() -> Path:
+    xdg_cache_home = os.getenv("XDG_CACHE_HOME", "").strip()
+    if xdg_cache_home:
+        return Path(xdg_cache_home).expanduser() / "openclaw" / "x-apify"
+    return Path.home() / ".cache" / "openclaw" / "x-apify"
+
+
 def load_config() -> ApifyConfig:
     token = os.getenv("APIFY_API_TOKEN", "").strip()
     actor_id = os.getenv("APIFY_ACTOR_ID", DEFAULT_ACTOR_ID).strip() or DEFAULT_ACTOR_ID
@@ -39,7 +46,7 @@ def load_config() -> ApifyConfig:
         timeout_seconds = DEFAULT_TIMEOUT_SECONDS
 
     cache_dir_raw = os.getenv("X_APIFY_CACHE_DIR", "").strip()
-    cache_dir = Path(cache_dir_raw).expanduser() if cache_dir_raw else _resolve_skill_dir() / ".cache"
+    cache_dir = Path(cache_dir_raw).expanduser() if cache_dir_raw else _resolve_default_cache_dir()
 
     return ApifyConfig(
         token=token,

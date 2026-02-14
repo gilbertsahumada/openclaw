@@ -4,6 +4,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
+import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -26,8 +28,26 @@ class CacheLookup:
 
 class ApifyCache:
     def __init__(self, cache_dir: Path) -> None:
-        self.cache_dir = cache_dir
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir = self._ensure_writable_cache_dir(cache_dir)
+
+    @staticmethod
+    def _ensure_writable_cache_dir(cache_dir: Path) -> Path:
+        target = cache_dir.expanduser()
+        try:
+            target.mkdir(parents=True, exist_ok=True)
+            probe = target / ".write-test"
+            with probe.open("w", encoding="utf-8") as handle:
+                handle.write("ok")
+            probe.unlink(missing_ok=True)
+            return target
+        except OSError:
+            fallback = Path(tempfile.gettempdir()) / "openclaw-x-apify-cache"
+            fallback.mkdir(parents=True, exist_ok=True)
+            print(
+                f"[cache] Using fallback cache directory: {fallback}",
+                file=sys.stderr,
+            )
+            return fallback
 
     @staticmethod
     def _make_key(mode: str, query: str, max_results: int) -> str:

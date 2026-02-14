@@ -10,7 +10,7 @@ Fetch public X/Twitter data via Apify.
 Optional:
 
 - `APIFY_ACTOR_ID` (default: `quacker/twitter-scraper`)
-- `X_APIFY_CACHE_DIR` (default: `skills/x-apify/.cache`)
+- `X_APIFY_CACHE_DIR` (default: `~/.cache/openclaw/x-apify`, fallback: `/tmp/openclaw-x-apify-cache`)
 
 ## Quick Start
 

@@ -113,6 +113,7 @@ TTL defaults:
 - Search results: 1 hour
 - User profiles: 24 hours
 - Specific tweet lookups: 24 hours
+- Default cache dir: `~/.cache/openclaw/x-apify` (fallback to `/tmp/openclaw-x-apify-cache` if needed)
 
 ## Notes
 
