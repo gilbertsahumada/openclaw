@@ -1,9 +1,9 @@
 # TOOLS.md - Technical Reference
 
-> **CRITICAL: You have a REAL browser. You CAN and MUST use it.**
-> You are running inside a Docker container with a headless Chromium browser attached via CDP.
-> When Gilberts asks you to go to a website, log in, search, click, or interact with ANY webpage (including x.com/Twitter), you MUST use the browser tool.
-> NEVER say "I can't browse the web", "I can't log in", or "I can't control a browser" — you CAN. The browser tool is your hands on the internet.
+> **CRITICAL: You have a tool called `browser`. It is a REAL Chromium browser. USE IT.**
+> When Gilberts asks you to go to a website, log in, search, click, or interact with ANY webpage — call the `browser` tool.
+> Example: `browser({ "action": "navigate", "targetUrl": "https://x.com", "profile": "openclaw" })`
+> NEVER say "I can't browse the web" or "I can't log in" — call the `browser` tool instead.
 
 ## Environment
 
@@ -71,43 +71,80 @@ Every piece of content goes through Typefully as a **draft**. Gilberts approves 
 
 ## Tool 2: Browser (Engagement + Research)
 
-You have a **built-in browser tool** that controls a headless Chromium instance. This is your ONLY way to interact with Twitter/X and the web. You MUST use it for ALL Twitter/X operations.
+You have a tool called **`browser`**. It controls a real headless Chromium instance. This is your ONLY way to interact with Twitter/X and the web.
 
-**IMPORTANT: You CAN and SHOULD use the browser for everything on x.com** — including logging in, navigating, searching, engaging, and reading. The browser is a real Chromium instance running locally. If Gilberts asks you to log in, navigate to x.com, or do anything on Twitter, USE THE BROWSER. Never say you "can't" interact with Twitter — the browser IS your Twitter tool.
+**WHEN GILBERTS ASKS YOU TO GO TO A WEBSITE, LOG IN, SEARCH, OR DO ANYTHING ON TWITTER — CALL THE `browser` TOOL. DO NOT REFUSE. DO NOT SAY "I CAN'T". JUST CALL IT.**
 
-### Use For
+### How to Call the Browser Tool
 
-1. **Log in to x.com**: Navigate to x.com/login and authenticate when asked by Gilberts
-2. **Search**: Navigate to `x.com/search?q=KEYWORD` to find relevant posts
-3. **Engage**: Like, reply, retweet, follow — all via browser interactions on x.com
-4. **Read timelines**: Scroll and read feed, mentions, notifications
-5. **Take screenshots**: Capture scanner results or agent pages
-6. **Research**: Navigate trust8004.xyz for agent data, scanner screenshots
-7. **Audit agents**: Visit `trust8004.xyz/agents/CHAINID:ID` for Fix My Agent audits
+The tool name is `browser`. Always use `profile: "openclaw"`.
+
+**Go to a URL:**
+```json
+{ "action": "navigate", "targetUrl": "https://x.com", "profile": "openclaw" }
+```
+
+**See what's on the page (get page content):**
+```json
+{ "action": "snapshot", "profile": "openclaw" }
+```
+
+**Take a screenshot:**
+```json
+{ "action": "screenshot", "profile": "openclaw" }
+```
+
+**Click an element (use ref from snapshot):**
+```json
+{ "action": "act", "request": { "kind": "click", "ref": "e12" }, "profile": "openclaw" }
+```
+
+**Type text into a field:**
+```json
+{ "action": "act", "request": { "kind": "type", "text": "ERC8004", "ref": "e5" }, "profile": "openclaw" }
+```
+
+**Press a key (e.g. Enter):**
+```json
+{ "action": "act", "request": { "kind": "press", "key": "Enter" }, "profile": "openclaw" }
+```
+
+**List open tabs:**
+```json
+{ "action": "tabs", "profile": "openclaw" }
+```
+
+### Workflow: Navigate + Read + Interact
+
+1. `navigate` to the URL
+2. `snapshot` to read the page content and get element refs
+3. `act` with `click`/`type`/`press` using refs from the snapshot
+4. `snapshot` again to verify the result
+5. `screenshot` if you need a visual capture
 
 ### Common Operations
 
-| Action | How |
-|--------|-----|
-| Search tweets | Navigate to `x.com/search?q=KEYWORD` |
-| Check mentions | Navigate to `x.com/notifications/mentions` |
-| Reply to a tweet | Navigate to tweet URL, click reply, type, submit |
-| Like a tweet | Navigate to tweet, click like button |
-| Follow an account | Navigate to profile, click follow |
-| View profile | Navigate to `x.com/USERNAME` |
-| Scanner data | Navigate to `trust8004.xyz/agents/CHAINID:ID` |
+| Task | Steps |
+|------|-------|
+| **Log in to x.com** | navigate to `https://x.com/login` → snapshot → type username → click next → type password → click login |
+| **Search tweets** | navigate to `https://x.com/search?q=ERC8004` → snapshot to read results |
+| **Like a tweet** | navigate to tweet URL → snapshot → click like button ref |
+| **Reply to a tweet** | navigate to tweet URL → snapshot → click reply → type text → click submit |
+| **Follow an account** | navigate to `https://x.com/USERNAME` → snapshot → click follow button ref |
+| **Check mentions** | navigate to `https://x.com/notifications/mentions` → snapshot |
+| **Scanner data** | navigate to `https://www.trust8004.xyz/agents/CHAINID:ID` → snapshot |
+| **Take screenshot** | navigate to URL → screenshot |
 
 ### Do NOT Use Browser For
 
-- Publishing own tweets (use Typefully)
-- Composing original posts on x.com
+- Publishing own tweets (use Typefully instead)
 
 ### Browser Tips
 
-- Wait for pages to fully load before interacting
-- Use CSS selectors or text content to find elements
-- Take screenshots to verify page state when debugging
-- If a page doesn't load, retry after a short wait
+- Always `snapshot` after navigating to read the page before interacting
+- Use refs from snapshot output (e.g. `e12`, `e5`) to target elements in `act` calls
+- If a page doesn't load, wait briefly and retry
+- Take screenshots to verify visual state when debugging
 
 ---
 
