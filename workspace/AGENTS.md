@@ -31,11 +31,11 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 |----------|------|----------|------------|
 | Daily Data Drop | **Typefully** draft | `data_drop_draft.md` | `daily/YYYY-MM-DD/` |
 | Fix My Agent (post) | **Typefully** draft | `data_drop_draft.md` | `daily/YYYY-MM-DD/` |
-| Fix My Agent (audits) | **Browser** | `YYYY-MM-DD_CHAINID-ID.md` | `audits/` |
+| Fix My Agent (audits) | **agent-browser** | `YYYY-MM-DD_CHAINID-ID.md` | `audits/` |
 | Educational Thread | **Typefully** draft | `educational_thread.md` | `weekly/YYYY-WNN/` |
 | Product Update | **Typefully** draft | `product_update.md` | `weekly/YYYY-WNN/` |
-| Community Engagement | **Browser** | `engagement_search.md` + `engagement_actions.md` | `daily/YYYY-MM-DD/` |
-| Analytics (internal) | **Browser** + Telegram | `analytics_report.md` | `weekly/YYYY-WNN/` |
+| Community Engagement | **agent-browser** | `engagement_search.md` + `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Analytics (internal) | **agent-browser** + Telegram | `analytics_report.md` | `weekly/YYYY-WNN/` |
 
 ## Daily Schedule (America/New_York)
 

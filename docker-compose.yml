@@ -36,6 +36,7 @@ services:
         cp -r /tmp/workspace-seed/* /home/node/.openclaw/workspace/ 2>/dev/null;
         mkdir -p /home/node/.openclaw/workspace/data;
         clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null;
+        clawhub install agent-browser --workdir /home/node/.openclaw/workspace 2>/dev/null;
         chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw about:blank &
         sleep 2 &&
         exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured

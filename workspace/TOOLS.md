@@ -1,15 +1,16 @@
 # TOOLS.md - Technical Reference
 
-> **CRITICAL: You have a tool called `browser`. It is a REAL Chromium browser. USE IT.**
-> When Gilberts asks you to go to a website, log in, search, click, or interact with ANY webpage — call the `browser` tool.
-> Example: `browser({ "action": "navigate", "targetUrl": "https://x.com", "profile": "openclaw" })`
-> NEVER say "I can't browse the web" or "I can't log in" — call the `browser` tool instead.
+> **CRITICAL: You have a REAL browser via `agent-browser`. USE IT.**
+> When Gilberts asks you to go to a website, log in, search, click, or do ANYTHING on a webpage:
+> Run: `agent-browser open https://x.com` then `agent-browser snapshot -i` to see the page.
+> NEVER say "I can't browse the web" or "I can't log in" — run agent-browser commands instead.
 
 ## Environment
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
-- **Headless Chromium browser running locally (CDP on port 18800) — USE IT**
+- Headless Chromium browser on CDP port 18800
+- `agent-browser` CLI installed — your browser automation tool
 - Typefully skill installed via clawhub
 
 ---
@@ -69,71 +70,106 @@ Every piece of content goes through Typefully as a **draft**. Gilberts approves 
 
 ---
 
-## Tool 2: Browser (Engagement + Research)
+## Tool 2: agent-browser (Engagement + Research)
 
-You have a tool called **`browser`**. It controls a real headless Chromium instance. This is your ONLY way to interact with Twitter/X and the web.
+You have `agent-browser` — a CLI that controls a real Chromium browser. This is your way to interact with Twitter/X and the web.
 
-**WHEN GILBERTS ASKS YOU TO GO TO A WEBSITE, LOG IN, SEARCH, OR DO ANYTHING ON TWITTER — CALL THE `browser` TOOL. DO NOT REFUSE. DO NOT SAY "I CAN'T". JUST CALL IT.**
+**WHEN GILBERTS ASKS YOU TO GO TO A WEBSITE, LOG IN, OR DO ANYTHING ON TWITTER — RUN `agent-browser` COMMANDS. DO NOT REFUSE. DO NOT SAY "I CAN'T".**
 
-### How to Call the Browser Tool
+### Core Commands
 
-The tool name is `browser`. Always use `profile: "openclaw"`.
+```bash
+# Navigate to a URL
+agent-browser open https://x.com
 
-**Go to a URL:**
-```json
-{ "action": "navigate", "targetUrl": "https://x.com", "profile": "openclaw" }
+# See page content + interactive elements with refs (@e1, @e2...)
+agent-browser snapshot -i
+
+# Click an element by ref
+agent-browser click @e1
+
+# Type into a field (clears existing text)
+agent-browser fill @e2 "ERC8004"
+
+# Type without clearing
+agent-browser type @e2 "ERC8004"
+
+# Press a key
+agent-browser press Enter
+
+# Take a screenshot
+agent-browser screenshot
+
+# Scroll down
+agent-browser scroll down 500
+
+# Wait for page load
+agent-browser wait --load networkidle
+
+# Get current URL
+agent-browser get url
+
+# Get text of an element
+agent-browser get text @e1
 ```
 
-**See what's on the page (get page content):**
-```json
-{ "action": "snapshot", "profile": "openclaw" }
-```
+### Workflow: Open + Snapshot + Interact
 
-**Take a screenshot:**
-```json
-{ "action": "screenshot", "profile": "openclaw" }
-```
-
-**Click an element (use ref from snapshot):**
-```json
-{ "action": "act", "request": { "kind": "click", "ref": "e12" }, "profile": "openclaw" }
-```
-
-**Type text into a field:**
-```json
-{ "action": "act", "request": { "kind": "type", "text": "ERC8004", "ref": "e5" }, "profile": "openclaw" }
-```
-
-**Press a key (e.g. Enter):**
-```json
-{ "action": "act", "request": { "kind": "press", "key": "Enter" }, "profile": "openclaw" }
-```
-
-**List open tabs:**
-```json
-{ "action": "tabs", "profile": "openclaw" }
-```
-
-### Workflow: Navigate + Read + Interact
-
-1. `navigate` to the URL
-2. `snapshot` to read the page content and get element refs
-3. `act` with `click`/`type`/`press` using refs from the snapshot
-4. `snapshot` again to verify the result
-5. `screenshot` if you need a visual capture
+1. `agent-browser open <url>` — go to the page
+2. `agent-browser snapshot -i` — read interactive elements (returns refs like @e1, @e2)
+3. `agent-browser click @e1` / `agent-browser fill @e2 "text"` — interact using refs
+4. `agent-browser snapshot -i` — verify the result
+5. `agent-browser screenshot` — capture visual if needed
 
 ### Common Operations
 
-| Task | Steps |
-|------|-------|
-| **Log in to x.com** | navigate to `https://x.com/login` → snapshot → type username → click next → type password → click login |
-| **Search tweets** | navigate to `https://x.com/search?q=ERC8004` → snapshot to read results |
-| **Like a tweet** | navigate to tweet URL → snapshot → click like button ref |
-| **Reply to a tweet** | navigate to tweet URL → snapshot → click reply → type text → click submit |
-| **Follow an account** | navigate to `https://x.com/USERNAME` → snapshot → click follow button ref |
-| **Check mentions** | navigate to `https://x.com/notifications/mentions` → snapshot |
-| **Scanner data** | navigate to `https://www.trust8004.xyz/agents/CHAINID:ID` → snapshot |
-| **Take screenshot** | navigate to URL → screenshot |
+**Log in to x.com:**
+```bash
+agent-browser open https://x.com/login
+agent-browser snapshot -i
+agent-browser fill @e1 "username"
+agent-browser click @e3          # "Next" button
+agent-browser snapshot -i
+agent-browser fill @e1 "password"
+agent-browser click @e2          # "Log in" button
+agent-browser wait --load networkidle
+```
+
+**Search tweets:**
+```bash
+agent-browser open "https://x.com/search?q=ERC8004"
+agent-browser snapshot -i
+```
+
+**Like a tweet:**
+```bash
+agent-browser open https://x.com/user/status/123456
+agent-browser snapshot -i
+agent-browser click @e5          # like button ref from snapshot
+```
+
+**Reply to a tweet:**
+```bash
+agent-browser open https://x.com/user/status/123456
+agent-browser snapshot -i
+agent-browser click @e3          # reply button
+agent-browser snapshot -i
+agent-browser fill @e1 "Great insight! Here's what we see in the scanner..."
+agent-browser click @e2          # submit reply
+```
+
+**Follow an account:**
+```bash
+agent-browser open https://x.com/USERNAME
+agent-browser snapshot -i
+agent-browser click @e4          # follow button ref
+```
+
+**Save/load session (persist login):**
+```bash
+agent-browser state save /home/node/.openclaw/browser/x-session.json
+agent-browser state load /home/node/.openclaw/browser/x-session.json
+```
 
 ### Do NOT Use Browser For
 
@@ -141,10 +177,11 @@ The tool name is `browser`. Always use `profile: "openclaw"`.
 
 ### Browser Tips
 
-- Always `snapshot` after navigating to read the page before interacting
-- Use refs from snapshot output (e.g. `e12`, `e5`) to target elements in `act` calls
-- If a page doesn't load, wait briefly and retry
-- Take screenshots to verify visual state when debugging
+- Always `snapshot -i` after navigating — refs change on every page load
+- Use `fill` instead of `type` for input fields (clears existing text)
+- If an element is not found, re-snapshot to get updated refs
+- Use `wait --load networkidle` after login or form submissions
+- Save session state after login so you don't have to re-authenticate
 
 ---
 
