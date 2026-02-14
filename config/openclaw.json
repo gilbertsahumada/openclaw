@@ -5,7 +5,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "openai/gpt-4.1-mini"
+        "primary": "openai/gpt-4.1"
       },
       "userTimezone": "America/New_York",
       "compaction": {
@@ -21,7 +21,7 @@
         "id": "main",
         "identity": {
           "name": "trust8004",
-          "theme": "ERC-8004 scanner and growth agent",
+          "theme": "ERC-8004 Community Manager",
           "emoji": "🔍"
         }
       }
