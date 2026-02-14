@@ -7,9 +7,10 @@ RUN apt-get update && \
     chromium \
     fonts-liberation \
     fonts-noto-color-emoji \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g clawhub agent-browser
+RUN npm install -g clawhub
 
 RUN git clone --depth 1 https://github.com/typefully/agent-skills.git /opt/typefully && \
     chmod +x /opt/typefully/skills/typefully/scripts/typefully.js && \

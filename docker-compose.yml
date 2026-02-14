@@ -14,6 +14,10 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TYPEFULLY_API_KEY: ${TYPEFULLY_API_KEY}
+      TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN}
+      TWITTER_API_KEY: ${TWITTER_API_KEY}
+      TWITTER_API_SECRET: ${TWITTER_API_SECRET}
+      APIFY_API_TOKEN: ${APIFY_API_TOKEN}
     volumes:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/.openclaw/workspace
@@ -21,7 +25,7 @@ services:
       - ./config/openclaw.json:/tmp/openclaw-seed.json:ro
       - ./workspace:/tmp/workspace-seed:ro
     init: true
-    shm_size: '2gb'
+    shm_size: "2gb"
     expose:
       - "18789"
     networks:
@@ -43,7 +47,6 @@ services:
         exec su -s /bin/sh node -c '
           mkdir -p /home/node/.openclaw/browser/openclaw/user-data
           clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null || true
-          clawhub install agent-browser --workdir /home/node/.openclaw/workspace 2>/dev/null || true
           (while true; do
             rm -f /home/node/.openclaw/browser/openclaw/user-data/SingletonLock
             chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw/user-data about:blank >>/tmp/chromium.log 2>&1
