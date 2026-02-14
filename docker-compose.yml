@@ -17,7 +17,7 @@ services:
     networks:
       - dokploy-network
     command:
-      ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
+      ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789", "--allow-unconfigured"]
 
   openclaw-cli:
     image: ghcr.io/openclaw/openclaw:latest
