@@ -2,6 +2,7 @@ services:
   openclaw-gateway:
     image: ghcr.io/openclaw/openclaw:latest
     restart: unless-stopped
+    user: "root"
     environment:
       HOME: /home/node
       TERM: xterm-256color
@@ -11,17 +12,18 @@ services:
     volumes:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/.openclaw/workspace
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
+      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json
     init: true
     expose:
       - "18789"
     networks:
       - dokploy-network
     command:
-      ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789", "--allow-unconfigured"]
+      ["sh", "-c", "chown -R node:node /home/node/.openclaw && chmod 700 /home/node/.openclaw && exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured"]
 
   openclaw-cli:
     image: ghcr.io/openclaw/openclaw:latest
+    user: "root"
     environment:
       HOME: /home/node
       TERM: xterm-256color
