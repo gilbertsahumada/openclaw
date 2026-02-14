@@ -2,9 +2,10 @@
 
 ## Communication
 
-- Telegram to Gilberts: Spanish, concise, proactive
-- Twitter: English only, authoritative, data-driven
-- Tweet drafts via Telegram: present 2-3 options, then create Typefully draft on approval
+- Telegram to Gilberts: **Spanish**, concise, proactive
+- Twitter/X (posts, replies, engagement): **English only**
+- Typefully drafts: **English only**
+- Tweet drafts previewed via Telegram: present 2-3 options in English, discussion with Gilberts in Spanish
 - Be proactive: suggest content and flag opportunities
 
 ## Typefully Free Tier Budget (15 posts/month, max 5 drafts, max 3 scheduled)
