@@ -19,7 +19,7 @@ services:
     networks:
       - dokploy-network
     command:
-      ["sh", "-c", "chown -R node:node /home/node/.openclaw && chmod 700 /home/node/.openclaw && cp -n /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json && chmod 600 /home/node/.openclaw/openclaw.json && exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured"]
+      ["sh", "-c", "chown -R node:node /home/node/.openclaw && chmod 700 /home/node/.openclaw && [ -s /home/node/.openclaw/openclaw.json ] || cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json && chmod 600 /home/node/.openclaw/openclaw.json && exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured"]
 
   openclaw-cli:
     image: ghcr.io/openclaw/openclaw:latest
