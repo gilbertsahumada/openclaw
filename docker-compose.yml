@@ -1,6 +1,9 @@
 services:
   openclaw-gateway:
-    image: ghcr.io/openclaw/openclaw:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.browser
+    image: openclaw-browser:latest
     restart: unless-stopped
     user: "root"
     environment:

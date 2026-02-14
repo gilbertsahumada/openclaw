@@ -31,6 +31,8 @@
     "enabled": true,
     "defaultProfile": "openclaw",
     "headless": true,
+    "noSandbox": true,
+    "executablePath": "/usr/bin/chromium",
     "profiles": {
       "openclaw": {
         "cdpPort": 18800,
