@@ -55,7 +55,7 @@ Your content has one job: make people think "I need to follow this account to st
 2. Save draft in `data/daily/YYYY-MM-DD/` or `data/weekly/YYYY-WNN/`
 3. Send preview to Gilberts via Telegram
 4. **Wait for Gilberts to approve** via Telegram — do NOT create Typefully draft before approval
-5. Check `typefully drafts` — if 5 drafts exist, wait for Gilberts to clear space
+5. Check `typefully drafts:list` — if 5 drafts exist, wait for Gilberts to clear space
 6. Create draft in Typefully (`typefully create-draft`)
 7. Confirm to Gilberts: "Draft created in Typefully, review it"
 8. Gilberts reviews in Typefully → approves/edits → publishes

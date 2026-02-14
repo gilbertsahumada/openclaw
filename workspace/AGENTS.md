@@ -20,7 +20,7 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 
 **Rules:**
 - Do NOT create Typefully draft until Gilberts approves content via Telegram
-- Check `typefully drafts` before creating — max 5 drafts at a time
+- Check `typefully drafts:list` before creating — max 5 drafts at a time
 - Alert Gilberts at 12/15 posts used in the month
 - If budget is tight, skip Fix My Agent and Product Update tweets — do those via engagement/replies instead
 - Data Drops are the core — protect that budget
@@ -73,7 +73,7 @@ Flow:
 1. Gather data from trust8004.xyz via browser
 2. Draft content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 3. Send preview to Gilberts via Telegram
-4. On approval, create Typefully draft: `typefully create-draft "content" --social-set-id ID`
+4. On approval, create Typefully draft: `typefully drafts:create --text "content" --social-set-id ID`
 5. Confirm to Gilberts: "Draft created in Typefully"
 
 Rules:

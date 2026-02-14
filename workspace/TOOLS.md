@@ -29,7 +29,7 @@ Use Typefully for ALL own-content publishing: tweets, threads, data drops.
 
 **Implications:**
 - Do NOT create a draft until Gilberts approves the content via Telegram — drafts are scarce
-- Before creating a new draft, check `typefully drafts` — if there are already 5, wait for Gilberts to publish/delete one
+- Before creating a new draft, check `typefully drafts:list` — if there are already 5, wait for Gilberts to publish/delete one
 - Prioritize high-impact posts: Data Drops and Educational Threads first, skip low-value posts if nearing the 15/month cap
 - Track monthly post count internally — alert Gilberts at 12/15 used
 
@@ -39,14 +39,33 @@ Every piece of content goes through Typefully as a **draft**. Gilberts approves 
 
 ### Commands
 
-| Command | Purpose |
-|---------|---------|
-| `typefully create-draft "content"` | Create a new draft tweet |
-| `typefully create-draft "content" --social-set-id ID` | Create draft for specific account |
-| `typefully create-draft "content" --thread-of N` | Create a thread with N tweets |
-| `typefully drafts` | List existing drafts |
-| `typefully social-sets` | List connected social accounts (get social-set-id) |
-| `typefully me` | Verify API authentication |
+The CLI is `typefully`. It uses `:` syntax for subcommands.
+
+```bash
+# Verify API auth
+typefully config:show
+
+# List connected accounts (get social_set_id)
+typefully social-sets:list
+
+# Set default account (so you don't need --social-set-id every time)
+typefully config:set-default <social_set_id>
+
+# Create a draft post
+typefully drafts:create --text "Your tweet content here"
+
+# Create a draft for specific platform
+typefully drafts:create --platform x --text "Your tweet content here"
+
+# Create a draft with scheduling
+typefully drafts:create --text "Content" --schedule next-free-slot
+
+# List drafts (check how many exist — max 5 on free tier)
+typefully drafts:list
+
+# List scheduled drafts
+typefully drafts:list --status scheduled
+```
 
 ### Publishing Flow
 
@@ -55,9 +74,10 @@ Every piece of content goes through Typefully as a **draft**. Gilberts approves 
 2. Save draft locally in data/daily/YYYY-MM-DD/ or data/weekly/YYYY-WNN/
 3. Send preview to Gilberts via Telegram
 4. Gilberts approves via Telegram
-5. Execute: typefully create-draft "content" --social-set-id ID
-6. Confirm: "Draft created in Typefully, review it"
-7. Gilberts reviews in Typefully -> approves/edits -> publishes
+5. Check draft count: typefully drafts:list (max 5 on free tier)
+6. Create draft: typefully drafts:create --text "content"
+7. Confirm: "Draft created in Typefully, review it"
+8. Gilberts reviews in Typefully -> approves/edits -> publishes
 ```
 
 ### What Goes Through Typefully

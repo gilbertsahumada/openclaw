@@ -11,6 +11,10 @@ RUN apt-get update && \
 
 RUN npm install -g clawhub agent-browser
 
+RUN git clone --depth 1 https://github.com/typefully/agent-skills.git /opt/typefully && \
+    chmod +x /opt/typefully/skills/typefully/scripts/typefully.js && \
+    ln -s /opt/typefully/skills/typefully/scripts/typefully.js /usr/local/bin/typefully
+
 ENV CHROME_PATH=/usr/bin/chromium
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-gpu --disable-dev-shm-usage"
 
