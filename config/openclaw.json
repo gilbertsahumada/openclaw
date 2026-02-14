@@ -30,10 +30,12 @@
   "browser": {
     "enabled": true,
     "defaultProfile": "openclaw",
-    "attachOnly": true,
+    "headless": true,
+    "noSandbox": true,
+    "executablePath": "/usr/bin/chromium",
     "profiles": {
       "openclaw": {
-        "cdpUrl": "http://127.0.0.1:18800",
+        "cdpPort": 18800,
         "color": "#FF4500"
       }
     }

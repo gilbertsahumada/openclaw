@@ -9,6 +9,7 @@ services:
     environment:
       HOME: /home/node
       TERM: xterm-256color
+      PLAYWRIGHT_BROWSERS_PATH: /home/node/.cache/ms-playwright
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
@@ -27,27 +28,23 @@ services:
       - dokploy-network
     command:
       - sh
-      - -c
+      - -lc
       - |
-        chown -R node:node /home/node/.openclaw &&
-        chmod 700 /home/node/.openclaw &&
-        cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json &&
-        chmod 600 /home/node/.openclaw/openclaw.json &&
-        cp -r /tmp/workspace-seed/* /home/node/.openclaw/workspace/ 2>/dev/null;
-        mkdir -p /home/node/.openclaw/workspace/data;
-        clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null;
-        clawhub install agent-browser --workdir /home/node/.openclaw/workspace 2>/dev/null;
-        mkdir -p /home/node/.openclaw/browser/openclaw;
-        (while true; do rm -f /home/node/.openclaw/browser/openclaw/SingletonLock; chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw about:blank; echo "Chromium exited, restarting in 3s..."; sleep 3; done) &
-        echo "Waiting for Chromium CDP on port 18800...";
-        for i in 1 2 3 4 5 6 7 8 9 10; do
-          if wget -q --spider http://127.0.0.1:18800/json/version 2>/dev/null; then
-            echo "Chromium ready after ${i}s";
-            break;
-          fi;
-          sleep 1;
-        done;
-        exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured
+        mkdir -p /home/node/.openclaw /home/node/.openclaw/workspace /home/node/.openclaw/workspace/data /home/node/.cache/ms-playwright
+        chown -R node:node /home/node
+        chmod 755 /home/node
+
+        cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json
+        chmod 600 /home/node/.openclaw/openclaw.json
+        if [ -d /tmp/workspace-seed ]; then
+          cp -r /tmp/workspace-seed/. /home/node/.openclaw/workspace/ 2>/dev/null || true
+        fi
+
+        exec su -s /bin/sh node -c '
+          clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null || true
+          clawhub install agent-browser --workdir /home/node/.openclaw/workspace 2>/dev/null || true
+          exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured
+        '
 
   openclaw-cli:
     image: ghcr.io/openclaw/openclaw:latest
