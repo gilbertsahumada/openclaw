@@ -6,12 +6,39 @@
     "defaults": {
       "model": {
         "primary": "openai/gpt-4o"
+      },
+      "userTimezone": "America/New_York",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
       }
-    }
+    },
+    "list": [
+      {
+        "id": "main",
+        "identity": {
+          "name": "trust8004",
+          "theme": "ERC-8004 scanner and growth agent",
+          "emoji": "🔍"
+        }
+      }
+    ]
   },
-  "channels": {
-    "telegram": {
-      "enabled": true
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
     }
   }
 }
