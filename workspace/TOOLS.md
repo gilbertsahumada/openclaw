@@ -13,6 +13,20 @@
 
 Use Typefully for ALL own-content publishing: tweets, threads, data drops.
 
+### Free Tier Limits (CRITICAL)
+
+| Resource | Limit |
+|----------|-------|
+| Posts per month | **15** |
+| Scheduled posts | **3** at a time |
+| Drafts | **5** at a time |
+
+**Implications:**
+- Do NOT create a draft until Gilberts approves the content via Telegram — drafts are scarce
+- Before creating a new draft, check `typefully drafts` — if there are already 5, wait for Gilberts to publish/delete one
+- Prioritize high-impact posts: Data Drops and Educational Threads first, skip low-value posts if nearing the 15/month cap
+- Track monthly post count internally — alert Gilberts at 12/15 used
+
 ### Key Rule: ALWAYS DRAFT, NEVER PUBLISH DIRECTLY
 
 Every piece of content goes through Typefully as a **draft**. Gilberts approves and publishes from the Typefully UI. NEVER use `--now` flag.

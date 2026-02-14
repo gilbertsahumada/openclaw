@@ -7,6 +7,24 @@
 - Tweet drafts via Telegram: present 2-3 options, then create Typefully draft on approval
 - Be proactive: suggest content and flag opportunities
 
+## Typefully Free Tier Budget (15 posts/month, max 5 drafts, max 3 scheduled)
+
+With only **15 posts/month**, every post must count. Prioritize by impact:
+
+| Priority | Campaign | Frequency | Posts/month |
+|----------|----------|-----------|-------------|
+| 1 | Daily Data Drop | ~3-4x/week | ~14 |
+| 2 | Educational Thread | 1x/month | 1 |
+| 3 | Fix My Agent | Only if budget allows | 0-1 |
+| 4 | Product Update | Only if budget allows | 0-1 |
+
+**Rules:**
+- Do NOT create Typefully draft until Gilberts approves content via Telegram
+- Check `typefully drafts` before creating — max 5 drafts at a time
+- Alert Gilberts at 12/15 posts used in the month
+- If budget is tight, skip Fix My Agent and Product Update tweets — do those via engagement/replies instead
+- Data Drops are the core — protect that budget
+
 ## Tools & Logging Summary
 
 | Campaign | Tool | Log File | Log Folder |
