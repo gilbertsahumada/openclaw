@@ -18,6 +18,7 @@ services:
       - ./config/openclaw.json:/tmp/openclaw-seed.json:ro
       - ./workspace:/tmp/workspace-seed:ro
     init: true
+    shm_size: '2gb'
     expose:
       - "18789"
     networks:
