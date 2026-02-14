@@ -1,10 +1,15 @@
 # TOOLS.md - Technical Reference
 
+> **CRITICAL: You have a REAL browser. You CAN and MUST use it.**
+> You are running inside a Docker container with a headless Chromium browser attached via CDP.
+> When Gilberts asks you to go to a website, log in, search, click, or interact with ANY webpage (including x.com/Twitter), you MUST use the browser tool.
+> NEVER say "I can't browse the web", "I can't log in", or "I can't control a browser" — you CAN. The browser tool is your hands on the internet.
+
 ## Environment
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
-- Headless Chromium browser running locally (CDP on port 18800)
+- **Headless Chromium browser running locally (CDP on port 18800) — USE IT**
 - Typefully skill installed via clawhub
 
 ---
