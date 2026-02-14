@@ -41,15 +41,14 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 
 ## Daily Schedule (America/New_York)
 
-| Time ET  | Campaign                      | Action                                 |
-| -------- | ----------------------------- | -------------------------------------- |
-| 8:00 AM  | (Mon only) Analytics Review   | Internal report, adjust strategy       |
-| 9:00 AM  | Daily Data Drop               | Post ecosystem stats tweet             |
-| 10:00 AM | (Mon only) Educational Thread | Post 3-tweet thread                    |
-| 11:00 AM | Community Engagement #1       | Search keywords, engage, reply         |
-| 5:00 PM  | Fix My Agent                  | Post audit invitation tweet            |
-| 4:00 PM  | (Fri only) Product Update     | Post weekly feature summary            |
-| 7:00 PM  | Community Engagement #2       | Micro-influencer outreach + monitoring |
+| Time ET  | Campaign                      | Action                                          |
+| -------- | ----------------------------- | ----------------------------------------------- |
+| 8:00 AM  | (Mon only) Analytics Review   | Internal report, adjust strategy                |
+| 9:00 AM  | Daily Data Drop               | Post ecosystem stats tweet                      |
+| 10:00 AM | (Mon only) Educational Thread | Post 3-tweet thread                             |
+| 11:00 AM | Community Engagement          | Scrape once, propose replies, wait for approval |
+| 5:00 PM  | Fix My Agent                  | Post audit invitation tweet                     |
+| 4:00 PM  | (Fri only) Product Update     | Post weekly feature summary                     |
 
 ## Campaign 1: Daily Data Drop (9:00 AM ET)
 
@@ -121,40 +120,51 @@ Rules:
 - Only discuss publicly available on-chain data
 - If invalid ID, kindly ask them to double-check CHAINID:ID format
 
-## Campaign 3: Community Engagement (11:00 AM + 7:00 PM ET)
+## Campaign 3: Daily Community Engagement (11:00 AM ET — ONE scrape per day)
 
 **Tool:** x-apify scraper + twclaw API | **Log:** `data/daily/YYYY-MM-DD/engagement_search.md` + `data/daily/YYYY-MM-DD/engagement_actions.md`
 
-### Task A — Keyword Search (11:00 AM)
+### Flow: Scrape → Propose → Wait for Approval → Execute
 
-Search for: ERC8004, ERC-8004, #ERC8004, "AI agents", chain names (Ethereum, Polygon, Arbitrum, Base, Optimism)
+1. **Scrape once** (x-apify):
+   - Mandatory: `ERC8004 OR ERC-8004`
+   - Extended: `#ERC8004 OR "AI agents" OR "on-chain agents"`
+   - Mentions: `@trust8004 OR to:trust8004 OR "trust8004"`
+   - **Search only English-language posts**
+2. **Log** results in `data/daily/YYYY-MM-DD/engagement_search.md`
+3. **Analyze** and select the best posts for engagement (max 10)
+4. **Send proposal to Gilberts via Telegram** (in Spanish) with this format:
 
-Flow:
+   ```
+   Encontré X posts relevantes hoy:
 
-1. Run scraper query: `ERC8004 OR ERC-8004` (mandatory baseline)
-2. Log search results in `data/daily/YYYY-MM-DD/engagement_search.md`
-3. For each relevant post:
-   - Prepare value-added interaction draft (reply/quote angle + reason)
-   - Queue API actions (like/reply/follow/retweet) for Gilberts approval
-4. Execute approved actions via twclaw API
-5. Log all actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
-6. Report summary to Gilberts via Telegram
+   1. @handle — [resumen breve del post en español]
+      → Reply (EN): "Your proposed reply in English here"
+      → Acción: reply + like
 
-### Task B — Micro-Influencer Outreach (7:00 PM)
+   2. @handle — [resumen breve del post en español]
+      → Reply (EN): "Your proposed reply in English here"
+      → Acción: like + follow
+      → Nota: Posible micro-influencer (~Xk followers)
 
-- Identify 2-3 accounts (2K-25K followers) from scraper results about ERC-8004 or on-chain AI
-- Verify alignment from recent public posts (educational, no scams/speculation)
-- Queue like/reply actions with specific thoughtful comments referencing their content
-- Invite to check trust8004 or collaborate on educational content
-- Never DM unless they initiate
-- Log all actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
+   ¿Cuáles apruebas? Puedes editar los replies.
+   ```
 
-Rules:
+5. **Wait for Gilberts to approve** — do NOT execute any action before approval
+6. **Execute** only approved actions via twclaw API (`reply`, `like`, `follow`, `retweet`)
+7. **Log** executed actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
+8. **Confirm** to Gilberts: "Listo — X replies, Y likes, Z follows ejecutados"
 
-- Every reply must add value — no generic compliments
-- Tailor each reply to context
-- Don't spam or repeat same message across posts
+### Rules
+
+- **ALL replies MUST be in English** — no exceptions
+- **ALL searches target English-language posts**
+- Every reply must add value — a data point, a clarification, or a useful link
+- Tailor each reply to the specific post context
+- No generic compliments ("great post!", "love this!") — always add substance
 - No token price discussion or incentive promises
+- Max ~10 engagement actions per day to stay organic
+- Flag accounts with 2K-25K followers as "Posible micro-influencer" in proposals
 
 ## Campaign 4: Weekly Educational Thread (Monday 10:00 AM ET)
 
@@ -274,12 +284,14 @@ Report contents:
 
 ## Reply Strategy
 
-| Target                    | Speed    | Approach                                        |
+**All replies require Gilberts approval before execution.** Propose via Telegram, wait, then execute.
+
+| Target                    | Priority | Approach                                        |
 | ------------------------- | -------- | ----------------------------------------------- |
-| Big web3/AI accounts      | <5 min   | Data or unique insight they didn't mention      |
-| ERC-8004 mentions         | ASAP     | Helpful context + offer to scan their agent     |
-| Chain ecosystem accounts  | Same day | Share relevant trust8004 data about their chain |
-| Developers with questions | <30 min  | Answer + link in follow-up reply                |
+| ERC-8004 mentions         | High     | Helpful context + offer to scan their agent     |
+| Developers with questions | High     | Answer + link in follow-up reply                |
+| Big web3/AI accounts      | Medium   | Data or unique insight they didn't mention      |
+| Chain ecosystem accounts  | Normal   | Share relevant trust8004 data about their chain |
 
 ## Link Strategy
 

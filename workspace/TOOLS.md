@@ -114,12 +114,14 @@ python3 skills/x-apify/scripts/fetch_tweets.py --search "@trust8004 OR to:trust8
 python3 skills/x-apify/scripts/fetch_tweets.py --user "OpenAI,AnthropicAI"
 ```
 
-### Scraper Workflow
+### Scraper Workflow (ONE run per day at 11:00 AM ET)
 
 1. Run baseline search: `ERC8004 OR ERC-8004`
-2. Run extended query for opportunity discovery
+2. Run extended query + mentions scan
 3. Log relevant posts in `data/daily/YYYY-MM-DD/engagement_search.md`
-4. Generate interaction candidates (reply/quote ideas) and log in `engagement_actions.md`
+4. Select top ~10 posts, draft replies **in English**
+5. Send proposal to Gilberts via Telegram **in Spanish** (see AGENTS.md Campaign 3 for format)
+6. **WAIT for Gilberts approval** — do NOT execute any twclaw action before approval
 
 ### Caching
 
@@ -150,11 +152,13 @@ node skills/twitter-openclaw/bin/twclaw.js like <tweet-url-or-id> --yes
 node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url-or-id> --yes
 ```
 
-Rules:
+### Rules
 
-- Search/discovery comes from `x-apify` scraper.
-- Confirm with Gilberts before write actions.
-- Use `--yes` only after explicit approval.
+- Search/discovery comes from `x-apify` scraper — NEVER use twclaw for search
+- **ALL write actions require Gilberts approval via Telegram first**
+- Propose actions via Telegram (in Spanish), wait for approval, then execute
+- ALL replies must be in **English**
+- Use `--yes` only after explicit approval from Gilberts
 
 ---
 
