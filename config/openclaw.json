@@ -2,6 +2,13 @@
   "gateway": {
     "mode": "local"
   },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai/gpt-4o"
+      }
+    }
+  },
   "channels": {
     "telegram": {
       "enabled": true
