@@ -46,6 +46,11 @@ services:
         fi
 
         exec su -s /bin/sh node -c '
+          daily_date=$(TZ=America/New_York date +%F)
+          daily_dir=/home/node/.openclaw/workspace/data/daily/$daily_date
+          mkdir -p "$daily_dir" /home/node/.openclaw/workspace/data/audits
+          touch "$daily_dir"/engagement_search.md "$daily_dir"/engagement_actions.md "$daily_dir"/mentions.md "$daily_dir"/data_drop_draft.md
+
           mkdir -p /home/node/.openclaw/browser/openclaw/user-data
           clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null || true
           (while true; do
@@ -60,7 +65,7 @@ services:
             fi
             sleep 1
           done
-          exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured
+          exec node dist/index.js gateway --bind loopback --port 18789 --allow-unconfigured
         '
 
   openclaw-cli:

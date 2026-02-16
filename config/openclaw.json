@@ -1,6 +1,18 @@
 {
   "gateway": {
-    "mode": "local"
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token"
+    },
+    "controlUi": {
+      "enabled": false
+    }
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "minimal"
+    }
   },
   "agents": {
     "defaults": {
