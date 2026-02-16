@@ -12,6 +12,7 @@ services:
       PLAYWRIGHT_BROWSERS_PATH: /home/node/.cache/ms-playwright
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TYPEFULLY_API_KEY: ${TYPEFULLY_API_KEY}
       TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN}
@@ -46,10 +47,10 @@ services:
         fi
 
         exec su -s /bin/sh node -c '
-          daily_date=$(TZ=America/New_York date +%F)
-          daily_dir=/home/node/.openclaw/workspace/data/daily/$daily_date
-          mkdir -p "$daily_dir" /home/node/.openclaw/workspace/data/audits
-          touch "$daily_dir"/engagement_search.md "$daily_dir"/engagement_actions.md "$daily_dir"/mentions.md "$daily_dir"/data_drop_draft.md
+          daily_date=$$(TZ=America/New_York date +%F)
+          daily_dir=/home/node/.openclaw/workspace/data/daily/$$daily_date
+          mkdir -p "$$daily_dir" /home/node/.openclaw/workspace/data/audits
+          touch "$$daily_dir"/engagement_search.md "$$daily_dir"/engagement_actions.md "$$daily_dir"/mentions.md "$$daily_dir"/data_drop_draft.md
 
           mkdir -p /home/node/.openclaw/browser/openclaw/user-data
           clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null || true
@@ -76,6 +77,7 @@ services:
       TERM: xterm-256color
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       BROWSER: echo
     volumes:
       - openclaw_config:/home/node/.openclaw
