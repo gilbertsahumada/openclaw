@@ -6,6 +6,7 @@
 - Twitter/X (posts, replies, engagement): **English only**
 - Typefully drafts: **English only**
 - Tweet drafts previewed via Telegram: present 2-3 options in English, discussion with Gilberts in Spanish
+- If a draft is not English, rewrite before creating it in Typefully
 - Be proactive: suggest content and flag opportunities
 
 ## Typefully Free Tier Budget (15 posts/month, max 5 drafts, max 3 scheduled)
@@ -29,26 +30,26 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 
 ## Tools & Logging Summary
 
-| Campaign              | Tool                                        | Log File                                         | Log Folder          |
-| --------------------- | ------------------------------------------- | ------------------------------------------------ | ------------------- |
-| Daily Data Drop       | **Typefully** draft                         | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
-| Fix My Agent (post)   | **Typefully** draft                         | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
-| Fix My Agent (audits) | **trust8004 data + twclaw API**             | `YYYY-MM-DD_CHAINID-ID.md`                       | `audits/`           |
-| Educational Thread    | **Typefully** draft                         | `educational_thread.md`                          | `weekly/YYYY-WNN/`  |
-| Product Update        | **Typefully** draft                         | `product_update.md`                              | `weekly/YYYY-WNN/`  |
-| Community Engagement  | **x-apify scraper + twclaw API**            | `engagement_search.md` + `engagement_actions.md` | `daily/YYYY-MM-DD/` |
-| Analytics (internal)  | **x-apify scraper + twclaw API** + Telegram | `analytics_report.md`                            | `weekly/YYYY-WNN/`  |
+| Campaign              | Tool                            | Log File                                         | Log Folder          |
+| --------------------- | ------------------------------- | ------------------------------------------------ | ------------------- |
+| Daily Data Drop       | **Typefully** draft             | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
+| Fix My Agent (post)   | **Typefully** draft             | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
+| Fix My Agent (audits) | **trust8004 data + twclaw API** | `YYYY-MM-DD_CHAINID-ID.md`                       | `audits/`           |
+| Educational Thread    | **Typefully** draft             | `educational_thread.md`                          | `weekly/YYYY-WNN/`  |
+| Product Update        | **Typefully** draft             | `product_update.md`                              | `weekly/YYYY-WNN/`  |
+| Community Engagement  | **twclaw API**                  | `engagement_search.md` + `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Analytics (internal)  | **twclaw API** + Telegram       | `analytics_report.md`                            | `weekly/YYYY-WNN/`  |
 
 ## Daily Schedule (America/New_York)
 
-| Time ET  | Campaign                      | Action                                          |
-| -------- | ----------------------------- | ----------------------------------------------- |
-| 8:00 AM  | (Mon only) Analytics Review   | Internal report, adjust strategy                |
-| 9:00 AM  | Daily Data Drop               | Post ecosystem stats tweet                      |
-| 10:00 AM | (Mon only) Educational Thread | Post 3-tweet thread                             |
-| 11:00 AM | Community Engagement          | Scrape once, propose replies, wait for approval |
-| 5:00 PM  | Fix My Agent                  | Post audit invitation tweet                     |
-| 4:00 PM  | (Fri only) Product Update     | Post weekly feature summary                     |
+| Time ET          | Campaign                      | Action                                                  |
+| ---------------- | ----------------------------- | ------------------------------------------------------- |
+| 8:00 AM          | (Mon only) Analytics Review   | Internal report, adjust strategy                        |
+| 9:00 AM          | Daily Data Drop               | Post ecosystem stats tweet                              |
+| 10:00 AM         | (Mon only) Educational Thread | Post 3-tweet thread                                     |
+| 10:00 AM (Chile) | Community Engagement          | Search once, propose 10 interactions, wait for approval |
+| 5:00 PM          | Fix My Agent                  | Post audit invitation tweet                             |
+| 4:00 PM          | (Fri only) Product Update     | Post weekly feature summary                             |
 
 ## Campaign 1: Daily Data Drop (9:00 AM ET)
 
@@ -74,7 +75,7 @@ Explore agents and trust signals below
 
 Flow:
 
-1. Gather data from trust8004 sources and supporting X context via scraper
+1. Gather data from trust8004 sources and supporting X context via `twclaw search --popular`
 2. Draft content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 3. Send preview to Gilberts via Telegram
 4. On approval, create Typefully draft: `typefully drafts:create --text "content" --social-set-id ID`
@@ -120,19 +121,17 @@ Rules:
 - Only discuss publicly available on-chain data
 - If invalid ID, kindly ask them to double-check CHAINID:ID format
 
-## Campaign 3: Daily Community Engagement (11:00 AM ET — ONE scrape per day)
+## Campaign 3: Daily Community Engagement (10:00 AM Chile, America/Santiago — ONE search pass per day)
 
-**Tool:** x-apify scraper + twclaw API | **Log:** `data/daily/YYYY-MM-DD/engagement_search.md` + `data/daily/YYYY-MM-DD/engagement_actions.md`
+**Tool:** twclaw API | **Log:** `data/daily/YYYY-MM-DD/engagement_search.md` + `data/daily/YYYY-MM-DD/engagement_actions.md`
 
-### Flow: Scrape → Propose → Wait for Approval → Execute
+### Flow: Search → Propose → Wait for Approval → Execute
 
-1. **Scrape once** (x-apify):
-   - Mandatory: `ERC8004 OR ERC-8004`
-   - Extended: `#ERC8004 OR "AI agents" OR "on-chain agents"`
-   - Mentions: `@trust8004 OR to:trust8004 OR "trust8004"`
-   - **Search only English-language posts**
+1. **Search once** with `twclaw search --popular`:
+   - Mandatory query: `(ERC8004 OR ERC-8004) lang:en -is:retweet`
+   - Result size: `-n 10`
 2. **Log** results in `data/daily/YYYY-MM-DD/engagement_search.md`
-3. **Analyze** and select the best posts for engagement (max 10)
+3. **Analyze** and keep exactly 10 posts for engagement
 4. **Send proposal to Gilberts via Telegram** (in Spanish) with this format:
 
    ```
@@ -153,7 +152,7 @@ Rules:
 5. **Wait for Gilberts to approve** — do NOT execute any action before approval
 6. **Execute** only approved actions via twclaw API (`reply`, `like`, `follow`, `retweet`)
 7. **Log** executed actions in `data/daily/YYYY-MM-DD/engagement_actions.md`
-8. **Confirm** to Gilberts: "Listo — X replies, Y likes, Z follows ejecutados"
+8. **Confirm** to Gilberts: "Listo — 10 posts procesados, una interacción por post"
 
 ### Rules
 
@@ -163,7 +162,7 @@ Rules:
 - Tailor each reply to the specific post context
 - No generic compliments ("great post!", "love this!") — always add substance
 - No token price discussion or incentive promises
-- Max ~10 engagement actions per day to stay organic
+- Target exactly 10 engagement actions per day (one interaction per selected post)
 - Flag accounts with 2K-25K followers as "Posible micro-influencer" in proposals
 
 ## Campaign 4: Weekly Educational Thread (Monday 10:00 AM ET)
@@ -195,13 +194,15 @@ Flow:
 
 1. Draft thread content and save to `data/weekly/YYYY-WNN/educational_thread.md`
 2. Send preview to Gilberts via Telegram
-3. On approval, create Typefully thread draft
+3. On approval, create Typefully thread draft with 4 line breaks between tweets
 4. Confirm to Gilberts
 
 Rules:
 
 - Number tweets 1/, 2/, 3/
 - Each tweet max 280 chars
+- Thread draft body must be **English only**
+- Thread split format is mandatory: tweet1 + `\n\n\n\n` + tweet2 + `\n\n\n\n` + tweet3
 - Simple language, no jargon
 - Link to trust8004 in a reply to the thread, not in the thread itself
 - Ask followers to RT if useful
@@ -245,13 +246,13 @@ Rules:
 
 ## Campaign 6: Weekly Analytics (Monday 8:00 AM ET — Internal Only)
 
-**Tool:** x-apify scraper + twclaw API + Telegram | **Log:** `data/weekly/YYYY-WNN/analytics_report.md`
+**Tool:** twclaw API + Telegram | **Log:** `data/weekly/YYYY-WNN/analytics_report.md`
 
 Generate an internal report. DO NOT tweet this. Send to Gilberts via Telegram.
 
 Flow:
 
-1. Gather analytics data via scraper/API pulls (mentions, search trends, post engagement snapshots)
+1. Gather analytics data via twclaw search/mentions pulls (search trends, post engagement snapshots)
 2. Compile report and save to `data/weekly/YYYY-WNN/analytics_report.md`
 3. Send report summary to Gilberts via Telegram
 
