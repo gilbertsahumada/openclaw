@@ -18,8 +18,6 @@ services:
       TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN}
       TWITTER_API_KEY: ${TWITTER_API_KEY}
       TWITTER_API_SECRET: ${TWITTER_API_SECRET}
-      APIFY_API_TOKEN: ${APIFY_API_TOKEN}
-      X_APIFY_CACHE_DIR: /home/node/.openclaw/workspace/data/.cache/x-apify
     volumes:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/.openclaw/workspace
@@ -36,7 +34,7 @@ services:
       - sh
       - -lc
       - |
-        mkdir -p /home/node/.openclaw /home/node/.openclaw/workspace /home/node/.openclaw/workspace/data /home/node/.openclaw/workspace/data/.cache/x-apify /home/node/.cache/ms-playwright
+        mkdir -p /home/node/.openclaw /home/node/.openclaw/workspace /home/node/.openclaw/workspace/data /home/node/.cache/ms-playwright
         chown -R node:node /home/node
         chmod 755 /home/node
 

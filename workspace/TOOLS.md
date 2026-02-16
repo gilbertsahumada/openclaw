@@ -1,14 +1,13 @@
 # TOOLS.md - Technical Reference
 
-> **CRITICAL: All X/Twitter search and monitoring must use scraper (`x-apify`).**
-> Always search for `ERC8004` and `ERC-8004` via scraper first.
+> **CRITICAL: All X/Twitter search and monitoring must use `twclaw` (Twitter API).**
+> Always run the baseline query with `ERC8004` and `ERC-8004` first.
 > Do NOT use browser automation for X research workflows.
 
 ## Environment
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
-- `x-apify` skill installed — primary X/Twitter scraper
 - `twitter-openclaw` skill installed — Twitter API read/write operations
 - Typefully skill installed via clawhub
 
@@ -54,6 +53,9 @@ typefully config:set-default <social_set_id>
 # Create a draft post
 typefully drafts:create --text "Your tweet content here"
 
+# Create a 3-tweet thread draft (split tweets with 4 line breaks)
+typefully drafts:create --text $'1/ First tweet in English\n\n\n\n2/ Second tweet in English\n\n\n\n3/ Third tweet in English'
+
 # Create a draft for specific platform
 typefully drafts:create --platform x --text "Your tweet content here"
 
@@ -75,10 +77,17 @@ typefully drafts:list --status scheduled
 3. Send preview to Gilberts via Telegram
 4. Gilberts approves via Telegram
 5. Check draft count: typefully drafts:list (max 5 on free tier)
-6. Create draft: typefully drafts:create --text "content"
-7. Confirm: "Draft created in Typefully, review it"
-8. Gilberts reviews in Typefully -> approves/edits -> publishes
+6. Preflight checks: English-only text + valid thread split (4 line breaks between tweets)
+7. Create draft: typefully drafts:create --text "content"
+8. Confirm: "Draft created in Typefully, review it"
+9. Gilberts reviews in Typefully -> approves/edits -> publishes
 ```
+
+### Draft Quality Guardrails (MANDATORY)
+
+- Draft text must be **English only**. Telegram messages can be Spanish, but draft body cannot.
+- For threads, never send one big paragraph. Use 4 line breaks between tweets.
+- Thread tweets must keep numbering (`1/`, `2/`, `3/`).
 
 ### What Goes Through Typefully
 
@@ -90,61 +99,16 @@ typefully drafts:list --status scheduled
 
 ---
 
-## Tool 2: x-apify (Search Scraper)
+## Tool 2: twitter-openclaw (Twitter API)
 
-Use `x-apify` for ALL keyword discovery and monitoring on X/Twitter.
-
-### Mandatory Keyword Search
-
-```bash
-# Required baseline query for monitoring
-python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --max-results 20 --format json
-
-# Optional language filter for English-only interaction queues
-python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --lang en --max-results 20 --format json
-```
-
-### Recommended Searches
-
-```bash
-# Extended discovery query
-python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004 OR #ERC8004 OR \"AI agents\"" --max-results 30 --format summary
-
-# Mention-style scan
-python3 skills/x-apify/scripts/fetch_tweets.py --search "@trust8004 OR to:trust8004 OR \"trust8004\"" --max-results 20 --format json
-
-# Inspect account output
-python3 skills/x-apify/scripts/fetch_tweets.py --user "OpenAI,AnthropicAI"
-```
-
-### Scraper Workflow (ONE run per day at 11:00 AM ET)
-
-1. Run baseline search: `ERC8004 OR ERC-8004`
-2. Run extended query + mentions scan
-3. Log relevant posts in `data/daily/YYYY-MM-DD/engagement_search.md`
-4. Select top ~10 posts, draft replies **in English**
-5. Send proposal to Gilberts via Telegram **in Spanish** (see AGENTS.md Campaign 3 for format)
-6. **WAIT for Gilberts approval** — do NOT execute any twclaw action before approval
-
-### Caching
-
-```bash
-# Cache stats
-python3 skills/x-apify/scripts/fetch_tweets.py --cache-stats
-
-# Force fresh pull
-python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --no-cache
-```
-
----
-
-## Tool 3: twitter-openclaw (Twitter API)
-
-Use `twclaw` for API-based reads/writes after scraper discovery.
+Use `twclaw` for search, reads, and approved write actions on X/Twitter.
 
 ```bash
 # Verify credentials
 node skills/twitter-openclaw/bin/twclaw.js auth-check
+
+# Daily relevance query (single run)
+node skills/twitter-openclaw/bin/twclaw.js search "(ERC8004 OR ERC-8004) lang:en -is:retweet" -n 10 --popular --json
 
 # Read one tweet before interacting
 node skills/twitter-openclaw/bin/twclaw.js read <tweet-url-or-id>
@@ -155,9 +119,18 @@ node skills/twitter-openclaw/bin/twclaw.js like <tweet-url-or-id> --yes
 node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url-or-id> --yes
 ```
 
+### Search Workflow (ONE run per day at 10:00 AM Chile, America/Santiago)
+
+1. Run exactly one relevance search (`--popular`) with `(ERC8004 OR ERC-8004) lang:en -is:retweet` and `-n 10`
+2. Log those 10 posts in `data/daily/YYYY-MM-DD/engagement_search.md`
+3. Prepare one interaction proposal for each post (10/10), replies in **English**
+4. Send proposal to Gilberts via Telegram **in Spanish** (see AGENTS.md Campaign 3 for format)
+5. **WAIT for Gilberts approval** before executing any write action
+
 ### Rules
 
-- Search/discovery comes from `x-apify` scraper — NEVER use twclaw for search
+- `twclaw search --popular` is the default for relevance
+- Daily run target is 10 posts from `(ERC8004 OR ERC-8004)` only
 - **ALL write actions require Gilberts approval via Telegram first**
 - Propose actions via Telegram (in Spanish), wait for approval, then execute
 - ALL replies must be in **English**
@@ -165,7 +138,7 @@ node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url-or-id> --yes
 
 ---
 
-## Tool 4: Data Logging System
+## Tool 3: Data Logging System
 
 ALL searches, analysis, and reports are saved in the `data/` folder with a consistent structure.
 
