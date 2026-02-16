@@ -99,6 +99,9 @@ Use `x-apify` for ALL keyword discovery and monitoring on X/Twitter.
 ```bash
 # Required baseline query for monitoring
 python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --max-results 20 --format json
+
+# Optional language filter for English-only interaction queues
+python3 skills/x-apify/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --lang en --max-results 20 --format json
 ```
 
 ### Recommended Searches
@@ -222,6 +225,7 @@ Every data file MUST start with:
 
 - Create daily/weekly folders on demand (don't pre-create)
 - Always use the header template
+- If a log file is missing, create it first with header template, then append entries
 - Append to existing files if the same activity runs multiple times in a day
 - Keep files **precise and concise** — bullet points over paragraphs, numbers over narrative
 

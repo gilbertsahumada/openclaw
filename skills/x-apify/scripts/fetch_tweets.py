@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 import sys
 import urllib.error
 import urllib.parse
@@ -176,6 +177,26 @@ def _as_int(value: Any) -> int:
     return 0
 
 
+def _normalize_lang(value: Any) -> Optional[str]:
+    if value is None:
+        return None
+    normalized = str(value).strip().lower().replace("_", "-")
+    return normalized or None
+
+
+def _extract_item_lang(item: Dict[str, Any]) -> str:
+    raw_lang = _first_non_empty(
+        (
+            item.get("lang"),
+            item.get("language"),
+            _dig(item, "tweet", "lang"),
+            _dig(item, "tweet", "language"),
+            _dig(item, "metadata", "lang"),
+        )
+    )
+    return _normalize_lang(raw_lang) or ""
+
+
 def _normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
     tweet_id = _first_non_empty(
         (
@@ -245,6 +266,7 @@ def _normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
             )
         )
     )
+    lang = _extract_item_lang(item)
 
     return {
         "id": str(tweet_id) if tweet_id is not None else "",
@@ -252,6 +274,7 @@ def _normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
         "author": str(author) if author is not None else "",
         "author_name": str(author_name) if author_name is not None else "",
         "created_at": str(created_at) if created_at is not None else "",
+        "lang": lang,
         "likes": likes,
         "retweets": retweets,
         "replies": replies,
@@ -259,16 +282,35 @@ def _normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def fetch_tweets(config: ApifyConfig, mode: str, query: str, max_results: int) -> Dict[str, Any]:
-    actor_input = _build_actor_input(mode=mode, query=query, max_results=max_results)
+def fetch_tweets(
+    config: ApifyConfig,
+    mode: str,
+    query: str,
+    max_results: int,
+    lang: Optional[str] = None,
+) -> Dict[str, Any]:
+    normalized_lang = _normalize_lang(lang)
+    fetch_limit = max_results if normalized_lang is None else min(200, max_results * 4)
+
+    actor_input = _build_actor_input(mode=mode, query=query, max_results=fetch_limit)
     dataset_id = _run_actor(config=config, actor_input=actor_input)
-    raw_items = _fetch_dataset_items(config=config, dataset_id=dataset_id, max_results=max_results)
-    tweets = [_normalize_item(item) for item in raw_items]
+    raw_items = _fetch_dataset_items(config=config, dataset_id=dataset_id, max_results=fetch_limit)
+
+    if normalized_lang is not None:
+        filtered_items: List[Dict[str, Any]] = []
+        for item in raw_items:
+            item_lang = _extract_item_lang(item)
+            if item_lang == normalized_lang or item_lang.startswith(f"{normalized_lang}-"):
+                filtered_items.append(item)
+        raw_items = filtered_items
+
+    tweets = [_normalize_item(item) for item in raw_items][:max_results]
 
     payload = {
         "query": query,
         "mode": mode,
         "fetched_at": utc_now_iso(),
+        "lang": normalized_lang or "",
         "count": len(tweets),
         "tweets": tweets,
     }
@@ -290,6 +332,7 @@ def render_summary(payload: Dict[str, Any]) -> str:
     lines = [
         f"=== X/Twitter {mode_label} Results ===",
         f"Query: {payload.get('query', '')}",
+        f"Language: {payload.get('lang', '') or 'any'}",
         f"Fetched: {fetched_at}",
         f"Results: {len(tweets)} tweets",
         "",
@@ -324,6 +367,7 @@ def parse_args() -> argparse.Namespace:
     mode.add_argument("--url", help="Specific tweet URL.")
 
     parser.add_argument("--max-results", type=int, default=20, help="Maximum number of results.")
+    parser.add_argument("--lang", help="Language filter (e.g., en, es).")
     parser.add_argument("--format", choices=["json", "summary"], default="json", help="Output format.")
     parser.add_argument("--output", help="Output file path.")
     parser.add_argument("--no-cache", action="store_true", help="Bypass cache and fetch fresh data.")
@@ -334,9 +378,11 @@ def parse_args() -> argparse.Namespace:
 
 def print_or_write(output: str, output_path: Optional[str]) -> None:
     if output_path:
-        with open(output_path, "w", encoding="utf-8") as handle:
+        path = Path(output_path).expanduser()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8") as handle:
             handle.write(output)
-        print(output_path)
+        print(str(path))
         return
     print(output)
 
@@ -379,17 +425,25 @@ def main() -> int:
         return 1
 
     max_results = max(1, int(args.max_results))
+    lang = _normalize_lang(args.lang)
+    cache_query = query if lang is None else f"{query} [lang={lang}]"
 
     payload: Optional[Dict[str, Any]] = None
     if not args.no_cache:
-        lookup = cache.get(mode=mode, query=query, max_results=max_results)
+        lookup = cache.get(mode=mode, query=cache_query, max_results=max_results)
         if lookup.hit and lookup.payload is not None:
             payload = lookup.payload
-            eprint(f"[cached] Results for: {query}")
+            eprint(f"[cached] Results for: {cache_query}")
 
     if payload is None:
         try:
-            payload = fetch_tweets(config=config, mode=mode, query=query, max_results=max_results)
+            payload = fetch_tweets(
+                config=config,
+                mode=mode,
+                query=query,
+                max_results=max_results,
+                lang=lang,
+            )
         except ApifyError as err:
             message = str(err)
             if err.status == 401:
@@ -405,7 +459,7 @@ def main() -> int:
             return 1
 
         if not args.no_cache:
-            cache.set(mode=mode, query=query, max_results=max_results, payload=payload)
+            cache.set(mode=mode, query=cache_query, max_results=max_results, payload=payload)
 
     if args.format == "summary":
         output_text = render_summary(payload)

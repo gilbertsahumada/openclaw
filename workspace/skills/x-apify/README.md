@@ -22,6 +22,7 @@ python3 scripts/fetch_tweets.py --search "OpenAI" --format summary
 ## Commands
 
 - Search: `python3 scripts/fetch_tweets.py --search "query"`
+- Search + language filter: `python3 scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --lang en`
 - User: `python3 scripts/fetch_tweets.py --user "OpenAI,AnthropicAI"`
 - Tweet URL: `python3 scripts/fetch_tweets.py --url "https://x.com/user/status/123"`
 - Cache stats: `python3 scripts/fetch_tweets.py --cache-stats`

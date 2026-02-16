@@ -66,6 +66,7 @@ python3 {baseDir}/scripts/fetch_tweets.py --search "artificial intelligence"
 python3 {baseDir}/scripts/fetch_tweets.py --search "OpenAI"
 python3 {baseDir}/scripts/fetch_tweets.py --search "#AI #MachineLearning"
 python3 {baseDir}/scripts/fetch_tweets.py --search "OpenAI" --max-results 10
+python3 {baseDir}/scripts/fetch_tweets.py --search "ERC8004 OR ERC-8004" --lang en
 ```
 
 ### User profiles
@@ -120,3 +121,4 @@ TTL defaults:
 - Keep `APIFY_API_TOKEN` secret.
 - If you hit a quota/rate limit, retry later or reduce `--max-results`.
 - Prefer cache-friendly queries for repeated monitoring tasks.
+- Use `--lang en` (or another code) to filter by tweet language.
