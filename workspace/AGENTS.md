@@ -283,6 +283,43 @@ Report contents:
 - "X new agents in 24h. The trend is clear:"
 - "What does CHAINID:ID actually mean? Let's break it down:"
 
+## Key Accounts Watchlist
+
+Monitor these accounts. When they post about ERC-8004, AI agents, or on-chain identity, propose an engagement to Gilberts via Telegram. These are high-value interactions — prioritize quality replies with data or unique insights.
+
+### ERC-8004 Authors & Core Team
+
+| Handle         | Who                              | Why                                                     |
+| -------------- | -------------------------------- | ------------------------------------------------------- |
+| @VittoStack    | Vitto Rivabella, EF dAI Team     | ERC-8004 co-author, active communicator of the standard |
+| @marco_derossi | Marco De Rossi, MetaMask AI Lead | ERC-8004 lead author, coordinates the ecosystem         |
+| @DavideCrapis  | Davide Crapis, Head of AI at EF  | ERC-8004 co-author, led the mainnet launch              |
+
+### Ecosystem & Infrastructure
+
+| Handle        | Who                                | Why                                                         |
+| ------------- | ---------------------------------- | ----------------------------------------------------------- |
+| @ethereumfndn | Ethereum Foundation                | Official EF account, amplifies ERC-8004 milestones          |
+| @virtuals_io  | Virtuals Protocol (281K followers) | Integrating ERC-8004 in production, agent-to-agent commerce |
+| @autonolas    | Olas (formerly Autonolas)          | Original AI agent project, 700K+ agent txns/month           |
+| @PhalaNetwork | Phala Network                      | Building TEE-secured ERC-8004 agents                        |
+| @ETHPanda_Org | ETHPanda                           | Community building events around ERC-8004                   |
+
+### Builders & Amplifiers
+
+| Handle          | Who                 | Why                                                |
+| --------------- | ------------------- | -------------------------------------------------- |
+| @austingriffith | Austin Griffith, EF | BuidlGuidl, mentioned as ERC-8004 contributor      |
+| @marvey_crypton | Marvey              | Active ERC-8004 explainer, good engagement threads |
+
+### Watchlist Rules
+
+- **Daily check**: During the engagement search (`twclaw search --popular`), also check recent tweets from watchlist accounts about ERC-8004
+- **Priority**: Watchlist account interactions are HIGH priority — propose them first to Gilberts
+- **Approach**: Always add value — share trust8004 data, offer an agent scan, or provide a unique insight. Never reply with generic praise
+- **Tone**: Peer-to-peer with authors (we're fellow builders), respectful with ecosystem accounts
+- **Do NOT**: Tag or mention multiple watchlist accounts in the same tweet (looks spammy)
+
 ## Reply Strategy
 
 **All replies require Gilberts approval before execution.** Propose via Telegram, wait, then execute.
