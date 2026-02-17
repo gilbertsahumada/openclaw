@@ -83,6 +83,7 @@ All data saved in `data/` — see `data/README.md` for full structure.
 Every file starts with `# [Type] — [Date]` header. Keep files lean: bullets, not paragraphs.
 
 **Retention (Monday mornings):** daily >14 days, weekly >8 weeks, audits >30 days — delete.
+**X Policy:** Do NOT store full tweet text. Log only: tweet ID/URL, author handle, 1-line summary. If notified a tweet was deleted, remove its reference from logs within 24h.
 
 ## Agent Format
 
