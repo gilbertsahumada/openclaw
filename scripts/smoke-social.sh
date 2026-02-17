@@ -4,6 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+cleanup() { rm -f /tmp/smoke-social-*.txt /tmp/smoke-social-*.json /tmp/smoke-social-*.out /tmp/smoke-social-*.err /tmp/smoke-social-*.yaml; }
+trap cleanup EXIT
+
 WITH_LIVE=0
 WITH_DOCKER=0
 

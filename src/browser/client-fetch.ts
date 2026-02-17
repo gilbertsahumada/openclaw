@@ -117,7 +117,7 @@ function enhanceBrowserFetchError(url: string, err: unknown, timeoutMs: number):
     msgLower.includes("failed to fetch") ||
     msgLower.includes("fetch failed") ||
     msgLower.includes("connection refused") ||
-    msgLower.includes("connect ");
+    /\bconnect\s+(?:econn|etimed|ehostunreach|enetunreach)/.test(msgLower);
   if (looksLikeTimeout) {
     return new Error(
       `Can't reach the OpenClaw browser control service (timed out after ${timeoutMs}ms). ${operatorHint} ${modelHint}`,

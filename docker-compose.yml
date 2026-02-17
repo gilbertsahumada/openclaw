@@ -28,6 +28,12 @@ services:
     shm_size: "2gb"
     expose:
       - "18789"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:18789/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     networks:
       - dokploy-network
     command:
@@ -35,10 +41,10 @@ services:
       - -lc
       - |
         mkdir -p /home/node/.openclaw /home/node/.openclaw/workspace /home/node/.openclaw/workspace/data /home/node/.cache/ms-playwright
-        chown -R node:node /home/node
+        chown node:node /home/node /home/node/.openclaw /home/node/.openclaw/workspace /home/node/.openclaw/workspace/data /home/node/.cache /home/node/.cache/ms-playwright
         chmod 755 /home/node
 
-        cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json
+        test -e /home/node/.openclaw/openclaw.json || cp /tmp/openclaw-seed.json /home/node/.openclaw/openclaw.json
         chmod 600 /home/node/.openclaw/openclaw.json
         if [ -d /tmp/workspace-seed ]; then
           cp -r /tmp/workspace-seed/. /home/node/.openclaw/workspace/ 2>/dev/null || true
@@ -54,8 +60,12 @@ services:
           clawhub install typefully --workdir /home/node/.openclaw/workspace 2>/dev/null || true
           (while true; do
             rm -f /home/node/.openclaw/browser/openclaw/user-data/SingletonLock
-            chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw/user-data about:blank >>/tmp/chromium.log 2>&1
+            chromium --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-setuid-sandbox --remote-debugging-address=127.0.0.1 --remote-debugging-port=18800 --user-data-dir=/home/node/.openclaw/browser/openclaw/user-data about:blank >>/tmp/chromium.log 2>&1
             echo "[watchdog] Chromium exited, restarting in 3s..." >>/tmp/chromium.log
+            # Rotate log to prevent unbounded growth
+            if [ "$(wc -c < /tmp/chromium.log 2>/dev/null)" -gt 1048576 ]; then
+              tail -c 524288 /tmp/chromium.log > /tmp/chromium.log.tmp && mv /tmp/chromium.log.tmp /tmp/chromium.log
+            fi
             sleep 3
           done) &
           for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do

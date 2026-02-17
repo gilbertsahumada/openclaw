@@ -82,7 +82,7 @@ Disk space is limited. Every file must be **precise and concise**.
 
 ### What NOT to Log
 
-- Raw HTML or full page content
+- Raw HTML or full-page content
 - Screenshots (reference them by description, don't embed)
 - Duplicate entries — check before appending
 - Tweets that aren't relevant to ERC-8004

@@ -33,7 +33,7 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 | Campaign              | Tool                            | Log File                                         | Log Folder          |
 | --------------------- | ------------------------------- | ------------------------------------------------ | ------------------- |
 | Daily Data Drop       | **Typefully** draft             | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
-| Fix My Agent (post)   | **Typefully** draft             | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
+| Fix My Agent (post)   | **Typefully** draft             | `fix_my_agent_draft.md`                          | `daily/YYYY-MM-DD/` |
 | Fix My Agent (audits) | **trust8004 data + twclaw API** | `YYYY-MM-DD_CHAINID-ID.md`                       | `audits/`           |
 | Educational Thread    | **Typefully** draft             | `educational_thread.md`                          | `weekly/YYYY-WNN/`  |
 | Product Update        | **Typefully** draft             | `product_update.md`                              | `weekly/YYYY-WNN/`  |
@@ -78,7 +78,7 @@ Flow:
 1. Gather data from trust8004 sources and supporting X context via `twclaw search --popular`
 2. Draft content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 3. Send preview to Gilberts via Telegram
-4. On approval, create Typefully draft: `typefully drafts:create --text "content" --social-set-id ID`
+4. On approval, create Typefully draft: `typefully drafts:create --text "content"` (set default account first with `typefully config:set-default`)
 5. Confirm to Gilberts: "Draft created in Typefully"
 
 Rules:
@@ -90,7 +90,7 @@ Rules:
 
 ## Campaign 2: Fix My Agent (5:00 PM ET)
 
-**Tool (post):** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
+**Tool (post):** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/fix_my_agent_draft.md`
 **Tool (audits):** trust8004 data + twclaw API | **Log:** `data/audits/YYYY-MM-DD_CHAINID-ID.md`
 
 Post an invitation for developers to share their agent ID for a free audit.
@@ -106,7 +106,7 @@ Let's make your agent trustworthy.
 
 Flow:
 
-1. Draft invitation content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
+1. Draft invitation content and save to `data/daily/YYYY-MM-DD/fix_my_agent_draft.md`
 2. Send preview to Gilberts via Telegram → on approval, create Typefully draft
 3. For each reply with a CHAINID:ID:
    - Look up agent on trust8004 data sources (public endpoints/pages)
@@ -163,7 +163,7 @@ Rules:
 - No generic compliments ("great post!", "love this!") — always add substance
 - No token price discussion or incentive promises
 - Target exactly 10 engagement actions per day (one interaction per selected post)
-- Flag accounts with 2K-25K followers as "Posible micro-influencer" in proposals
+- Flag accounts with 2K-25K followers as "Possible micro-influencer" in proposals
 
 ## Campaign 4: Weekly Educational Thread (Monday 10:00 AM ET)
 

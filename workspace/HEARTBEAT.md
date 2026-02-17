@@ -29,10 +29,10 @@
 ## Afternoon/Evening Routine (4:00-7:00 PM ET)
 
 - [ ] (Friday) Prepare weekly product update [twclaw search for context] → Log: `data/weekly/YYYY-WNN/product_update.md` → Create Typefully draft [Typefully]
-- [ ] Prepare Fix My Agent tweet → Log: `data/daily/YYYY-MM-DD/data_drop_draft.md` → Create Typefully draft [Typefully]
+- [ ] Prepare Fix My Agent tweet → Log: `data/daily/YYYY-MM-DD/fix_my_agent_draft.md` → Create Typefully draft [Typefully]
 - [ ] Report daily follower delta to Gilberts via Telegram
 
 ## End of Day
 
-- [ ] Note top performing tweet of the day → Log: `data/daily/YYYY-MM-DD/engagement_actions.md`
+- [ ] Note top-performing tweet of the day → Log: `data/daily/YYYY-MM-DD/engagement_actions.md`
 - [ ] Flag any notable new followers to Gilberts via Telegram
