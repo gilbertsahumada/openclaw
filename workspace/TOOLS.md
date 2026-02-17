@@ -67,21 +67,16 @@ node skills/twitter-openclaw/bin/twclaw.js retweet <id> --yes
 
 ## Tool 3: trust8004 API (Ecosystem Metrics)
 
-**URL:** `https://trust8004.xyz/api/v2/metrics/daily-summary`
-
-Vercel bot-protection blocks `curl`. Use `agent-browser` to fetch:
-
-```
-agent-browser open https://trust8004.xyz/api/v2/metrics/daily-summary
-agent-browser snapshot -i
+```bash
+exec node scripts/fetch-metrics.mjs
 ```
 
-Read the JSON from the page content.
+Outputs JSON to stdout. Uses headless Chromium to bypass Vercel bot-protection.
 
 Response fields:
 
 - `totals.registrations24h` / `registrationsDeltaPct` — new agents + % change vs previous day
-- `totals.verifiedEndpoints` / `verifiedEndpointsDeltaAbs` — verified endpoints + delta
+- `totals.verifiedEndpointsTotal` / `verifiedEndpointsDeltaAbs` — verified endpoints + delta
 - `chains[]` — per-chain breakdown: registrations, delta, trend (up/down/stable), verified endpoints
 - `topChainsByRegistrations24h` — sorted ranking
 
@@ -89,33 +84,25 @@ Numbers must match the API exactly.
 
 ## Tool 4: Data Logging
 
-All data saved in `data/` — see `data/README.md` for full structure.
-
-| Activity       | File                       | Folder              |
-| -------------- | -------------------------- | ------------------- |
-| Search results | `engagement_search.md`     | `daily/YYYY-MM-DD/` |
-| Actions done   | `engagement_actions.md`    | `daily/YYYY-MM-DD/` |
-| Data Drop      | `data_drop_draft.md`       | `daily/YYYY-MM-DD/` |
-| Fix My Agent   | `fix_my_agent_draft.md`    | `daily/YYYY-MM-DD/` |
-| Analytics      | `analytics_report.md`      | `weekly/YYYY-WNN/`  |
-| Edu thread     | `educational_thread.md`    | `weekly/YYYY-WNN/`  |
-| Product update | `product_update.md`        | `weekly/YYYY-WNN/`  |
-| Audit          | `YYYY-MM-DD_CHAINID-ID.md` | `audits/`           |
+All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
 Every file starts with `# [Type] — [Date]` header. Keep files lean: bullets, not paragraphs.
 
-**Retention (Monday mornings):** daily >14 days, weekly >8 weeks, audits >30 days — delete.
-**X Policy:** Do NOT store full tweet text. Log only: tweet ID/URL, author handle, 1-line summary. If notified a tweet was deleted, remove its reference from logs within 24h.
+**Retention (Monday mornings):** daily >14 days — delete.
+**X Policy:** Do NOT store full tweet text. Log only: tweet ID/URL, author handle, 1-line summary.
 
 ## Agent Format
 
 **`CHAINID:ID`** — e.g., `8453:42`. URL: `https://www.trust8004.xyz/agents/CHAINID:ID`
 
-| Chain    | ID    | Chain    | ID   |
-| -------- | ----- | -------- | ---- |
-| Ethereum | 1     | Base     | 8453 |
-| Polygon  | 137   | Optimism | 10   |
-| Arbitrum | 42161 |          |      |
+| Chain        | ID       | Chain     | ID    |
+| ------------ | -------- | --------- | ----- |
+| Ethereum     | 1        | BNB Chain | 56    |
+| Polygon      | 137      | Optimism  | 10    |
+| Arbitrum One | 42161    | Celo      | 42220 |
+| Base Sepolia | 84532    | Gnosis    | 100   |
+| Eth Sepolia  | 11155111 | Avalanche | 43114 |
+| Abstract     | 2741     | Linea     | 59144 |
 
 ## ERC-8004 Key Concepts
 
