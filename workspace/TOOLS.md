@@ -65,7 +65,29 @@ node skills/twitter-openclaw/bin/twclaw.js retweet <id> --yes
 - **ALL writes require Gilberts approval first**
 - ALL replies in **English**, proposals to Gilberts in **Spanish**
 
-## Tool 3: Data Logging
+## Tool 3: trust8004 API (Ecosystem Metrics)
+
+**URL:** `https://trust8004.xyz/api/v2/metrics/daily-summary`
+
+Vercel bot-protection blocks `curl`. Use `agent-browser` to fetch:
+
+```
+agent-browser open https://trust8004.xyz/api/v2/metrics/daily-summary
+agent-browser snapshot -i
+```
+
+Read the JSON from the page content.
+
+Response fields:
+
+- `totals.registrations24h` / `registrationsDeltaPct` — new agents + % change vs previous day
+- `totals.verifiedEndpoints` / `verifiedEndpointsDeltaAbs` — verified endpoints + delta
+- `chains[]` — per-chain breakdown: registrations, delta, trend (up/down/stable), verified endpoints
+- `topChainsByRegistrations24h` — sorted ranking
+
+Numbers must match the API exactly.
+
+## Tool 4: Data Logging
 
 All data saved in `data/` — see `data/README.md` for full structure.
 

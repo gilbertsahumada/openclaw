@@ -32,7 +32,7 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 
 | Campaign              | Tool                            | Log File                                         | Log Folder          |
 | --------------------- | ------------------------------- | ------------------------------------------------ | ------------------- |
-| Daily Data Drop       | **Typefully** draft             | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
+| Daily Data Drop       | **trust8004 API** + Typefully   | `data_drop_draft.md`                             | `daily/YYYY-MM-DD/` |
 | Fix My Agent (post)   | **Typefully** draft             | `fix_my_agent_draft.md`                          | `daily/YYYY-MM-DD/` |
 | Fix My Agent (audits) | **trust8004 data + twclaw API** | `YYYY-MM-DD_CHAINID-ID.md`                       | `audits/`           |
 | Educational Thread    | **Typefully** draft             | `educational_thread.md`                          | `weekly/YYYY-WNN/`  |
@@ -53,40 +53,52 @@ With only **15 posts/month**, every post must count. Prioritize by impact:
 
 ## Campaign 1: Daily Data Drop (9:00 AM ET)
 
+**Data source:** `curl -s https://trust8004.xyz/api/v2/metrics/daily-summary`
 **Tool:** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
 
-Post a concise data-driven update about the ERC-8004 ecosystem:
+### What to include
 
-- New agents registered in last 24h
-- Top 3 chains by new agents
-- % of agents with verified endpoints
-- Notable reputation trends
+1. **Headline number**: `totals.registrations24h` new agents + `registrationsDeltaPct` vs yesterday
+2. **Per-chain breakdown**: top chains from `chains[]` sorted by `registrations24h`, show delta and trend
+3. **Verified endpoints**: `totals.verifiedEndpoints` total + `verifiedEndpointsDeltaAbs` new
+4. **Tag chains**: @ethereum @base @0xPolygon @arbitrum @Optimism (only chains with activity)
 
-Format:
+### Tweet template (vary structure daily, never copy paste)
 
 ```
-[Hook line — vary daily]
-- +X new agents in 24h (Top chains: Chain1, Chain2, Chain3)
-- X% of agents have verified endpoints
-- Most common tag: "X"; average reputation score [trend]
+128 new ERC-8004 agents in the last 24h. +24% vs yesterday
 
-Explore agents and trust signals below
+Ethereum: 42 (+35%)
+Base: 37 (slight dip)
+Polygon: 22 (steady)
+
+942 verified endpoints across all chains, 17 new today
+
+@ethereum @base @0xPolygon
 ```
 
-Flow:
+### Flow
 
-1. Gather data from trust8004 sources and supporting X context via `twclaw search --popular`
-2. Draft content and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
-3. Send preview to Gilberts via Telegram
-4. On approval, create Typefully draft: `typefully drafts:create --text "content"` (set default account first with `typefully config:set-default`)
-5. Confirm to Gilberts: "Draft created in Typefully"
+1. Fetch data via browser (Vercel blocks curl):
+   ```
+   agent-browser open https://trust8004.xyz/api/v2/metrics/daily-summary
+   agent-browser snapshot -i
+   ```
+2. Read the JSON from the page, extract key numbers
+3. Draft tweet and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
+4. Send preview to Gilberts via Telegram
+5. On approval, create Typefully draft: `typefully drafts:create --text "content"`
+6. Confirm to Gilberts: "Draft created in Typefully"
 
-Rules:
+### Rules
 
-- Vary the hook: "ERC-8004 Data Pulse", "Daily Agents Insight", "24h Scanner Report"
-- Max 2 hashtags, only in main tweet (#ERC8004, #AIAgents)
+- Numbers must match the API response exactly. Never round, estimate, or make up data
+- Vary the opening. Don't start with the same phrase two days in a row
+- Show trend context: "up from yesterday", "slight dip", "steady", "biggest day this week"
+- Only tag chains that have activity in the data (don't tag a chain with 0 registrations)
+- Max 2 hashtags in main tweet (#ERC8004, #AIAgents), but skip them if the tweet is tight
 - Link goes in a REPLY to your own tweet (trust8004.xyz), never in main tweet
-- Numbers must be accurate and reproducible
+- Follow the Writing Style rules from SOUL.md. No em dashes, no AI-sounding phrases
 
 ## Campaign 2: Fix My Agent (5:00 PM ET)
 
