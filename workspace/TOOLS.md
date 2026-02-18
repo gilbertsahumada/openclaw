@@ -1,13 +1,9 @@
 # TOOLS.md - Technical Reference
 
-> **CRITICAL: All X/Twitter search and monitoring must use `twclaw` (Twitter API).**
-> Do NOT use browser automation for X research workflows.
-
 ## Environment
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
-- `twitter-openclaw` skill installed — Twitter API read/write
 - Typefully skill installed via clawhub
 
 ## Tool 1: Typefully (Publishing)
@@ -43,29 +39,7 @@ typefully drafts:list --status scheduled
 - Threads: 4 line breaks between tweets, numbered `1/`, `2/`, `3/`
 - Save locally in `data/daily/YYYY-MM-DD/` or `data/weekly/YYYY-WNN/` before creating draft
 
-## Tool 2: twclaw (Twitter API)
-
-```bash
-# Auth check
-node skills/twitter-openclaw/bin/twclaw.js auth-check
-
-# Daily search (ONE run at 10:00 AM Chile)
-node skills/twitter-openclaw/bin/twclaw.js search "(ERC8004 OR ERC-8004) lang:en -is:retweet" -n 10 --popular --json
-
-# Read a tweet
-node skills/twitter-openclaw/bin/twclaw.js read <tweet-url-or-id>
-
-# Write actions (ONLY after Gilberts approval)
-node skills/twitter-openclaw/bin/twclaw.js reply <id> "reply text" --yes
-node skills/twitter-openclaw/bin/twclaw.js like <id> --yes
-node skills/twitter-openclaw/bin/twclaw.js retweet <id> --yes
-```
-
-- `--popular` is default for relevance
-- **ALL writes require Gilberts approval first**
-- ALL replies in **English**, proposals to Gilberts in **Spanish**
-
-## Tool 3: trust8004 API (Ecosystem Metrics)
+## Tool 2: trust8004 API (Ecosystem Metrics)
 
 ```bash
 exec node scripts/fetch-metrics.mjs
@@ -82,7 +56,7 @@ Response fields:
 
 Numbers must match the API exactly.
 
-## Tool 4: Data Logging
+## Tool 3: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
