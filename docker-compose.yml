@@ -50,7 +50,7 @@ services:
           cp -rn /tmp/workspace-seed/. /home/node/.openclaw/workspace/ 2>/dev/null || true
           # Always sync managed files (they may have been updated in the repo)
           for f in /tmp/workspace-seed/*.md /tmp/workspace-seed/*.json; do
-            [ -f "$f" ] && cp "$f" /home/node/.openclaw/workspace/ 2>/dev/null || true
+            [ -f "$$f" ] && cp "$$f" /home/node/.openclaw/workspace/ 2>/dev/null || true
           done
           if [ -d /tmp/workspace-seed/skills ]; then
             cp -r /tmp/workspace-seed/skills/. /home/node/.openclaw/workspace/skills/ 2>/dev/null || true
