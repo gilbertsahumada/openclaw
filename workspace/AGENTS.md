@@ -45,16 +45,24 @@ Only **Daily Data Drop** is active. All other campaigns are paused.
 
 ### Tweet template (vary structure daily, never copy paste)
 
+WRONG tone (too corporate, too cold):
+
 ```
-128 new ERC-8004 agents in the last 24h. +24% vs yesterday
+222 new ERC-8004 agents registered in the last 24h. -72% vs yesterday.
+BNB Chain: 156. Base Sepolia: 19. Ethereum: 11.
+813 verified endpoints total, 2 new today.
+```
 
-Ethereum: 42 (+35%)
-Base: 37 (slight dip)
-Polygon: 22 (steady)
+RIGHT tone (warm, crypto-native, human):
 
-942 verified endpoints across all chains, 17 new today
+```
+222 new agents onchain today. BNB Chain going wild with 156
 
-@ethereum @base @0xPolygon
+Ethereum: 11 (quiet day)
+Base Sepolia: 19
+Arbitrum: 9, steady
+
+813 verified endpoints and climbing. who's building rn?
 ```
 
 ### Flow
