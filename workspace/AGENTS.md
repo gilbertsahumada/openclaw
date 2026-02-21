@@ -77,6 +77,34 @@ Polygon: 22 (steady)
 - Link goes in a REPLY to your own tweet (trust8004.xyz), never in main tweet
 - Follow the Writing Style rules from SOUL.md. No em dashes, no AI-sounding phrases
 
+## Changelog Updates (when Gilberts requests or after new releases)
+
+**Data source:** `node scripts/fetch-changelog.mjs` (outputs JSON array to stdout)
+
+When Gilberts says to check for platform updates, or when there are new versions since the last tweet:
+
+1. Fetch changelog: `exec node scripts/fetch-changelog.mjs`
+2. Identify entries newer than the last update tweet
+3. Group related changes into a single tweet (don't tweet every minor fix)
+4. Focus on features and improvements that users care about, skip internal/cosmetic changes
+5. Draft tweet, send preview to Gilberts via Telegram, same approval flow as Data Drop
+
+Example:
+
+```
+trust8004 v2.6.5 just dropped
+
+New daily metrics API, metadata reason filters, and multi-chain batch registration in a single tx
+
+The scanner keeps getting better. changelog at trust8004.xyz/changelog
+```
+
+Rules:
+
+- Combine multiple small releases into one tweet when they shipped on the same day
+- Highlight what matters to users, not internal refactors
+- Same approval flow as Data Drop (draft → Telegram → Typefully)
+
 ## Link Strategy
 
 - NEVER put links in main tweet (algorithm suppression)

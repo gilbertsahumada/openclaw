@@ -56,6 +56,14 @@ Response fields:
 
 Numbers must match the API exactly.
 
+### Changelog
+
+```bash
+exec node scripts/fetch-changelog.mjs
+```
+
+Returns JSON array of `{ date, version, type, title, description, highlights }`. Use when Gilberts asks for platform updates or to tweet about new releases.
+
 ## Tool 3: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
