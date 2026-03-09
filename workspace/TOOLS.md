@@ -39,7 +39,40 @@ typefully drafts:list --status scheduled
 - Threads: 4 line breaks between tweets, numbered `1/`, `2/`, `3/`
 - Save locally in `data/daily/YYYY-MM-DD/` or `data/weekly/YYYY-WNN/` before creating draft
 
-## Tool 2: trust8004 API (Ecosystem Metrics)
+## Tool 2: twclaw (Twitter/X Interaction)
+
+**Command:** `exec node skills/twitter-openclaw/bin/twclaw.js`
+
+```bash
+exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" -n 10 --popular --json  # Search
+exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes                    # Like
+exec node skills/twitter-openclaw/bin/twclaw.js reply <tweet-url> "text" --yes            # Reply
+exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes                 # Retweet
+exec node skills/twitter-openclaw/bin/twclaw.js tweet "text" --yes                        # Post tweet
+exec node skills/twitter-openclaw/bin/twclaw.js read <tweet-url>                          # Read (on-demand)
+```
+
+Requires `TWITTER_BEARER_TOKEN` and `TWITTER_USER_ID`.
+All write actions need `--yes` flag. ALL interactions require Gilberts approval first.
+
+### Token Refresh
+
+If you get a 401 Unauthorized error, refresh the token first:
+
+```bash
+exec node scripts/twitter-refresh-token.mjs
+```
+
+Then retry the original command. If refresh also fails, tell Gilberts to re-authorize.
+
+### API Budget (CRITICAL)
+
+- **1 search/day** (`"ERC-8004"`, `-n 10`). No weekend searches
+- **3 actions/day max** (like + reply + retweet combined)
+- **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
+- Total: **max 4 API calls/day**
+
+## Tool 3: trust8004 API (Ecosystem Metrics)
 
 ```bash
 exec node scripts/fetch-metrics.mjs
@@ -64,7 +97,7 @@ exec node scripts/fetch-changelog.mjs
 
 Returns JSON array of `{ date, version, type, title, description, highlights }`. Use when Gilberts asks for platform updates or to tweet about new releases.
 
-## Tool 3: Data Logging
+## Tool 4: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
