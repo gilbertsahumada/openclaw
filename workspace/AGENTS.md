@@ -187,14 +187,15 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 Monitor these accounts for engagement opportunities:
 @VittoStack, @marco_derossi, @DavideCrapis, @ethereumfndn, @virtuals_io, @autonolas, @PhalaNetwork, @ETHPanda_Org, @austingriffith, @marvey_crypton
 
-### API Budget Rules
+### API Budget Rules (automatic/heartbeat only)
 
-- **1 search call per day** (never more). Use `-n 5` to limit results
-- **MAX 3 interactions per day** (likes + replies + retweets combined)
-- **No engagement on weekends** (Saturday/Sunday) — save API quota
-- **Never call `twclaw mentions`** or `twclaw home` automatically — only when Gilberts asks
-- **Never call `twclaw user-tweets`** automatically — only when Gilberts asks
-- Total daily Twitter API calls budget: 1 search + up to 3 actions = **max 4 calls/day**
+These limits apply to **automatic heartbeat execution only**. If Gilberts asks you to search or engage, always do it — his requests override these limits.
+
+- **1 automatic search per day** (heartbeat). Use `-n 10` to limit results
+- **MAX 3 automatic interactions per day** (likes + replies + retweets combined)
+- **No automatic engagement on weekends** (Saturday/Sunday) — save API quota
+- **Never call mentions, home, or user-tweets automatically** — only when Gilberts asks
+- When Gilberts asks you to search, engage, or interact — **always do it**, no matter the budget
 
 ### General Rules
 
