@@ -169,9 +169,9 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
    - Like: `exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes`
    - Retweet: `exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes`
 
-**NOTE:** Only reply if tweet has `reply_settings: "everyone"`. Otherwise, just like/retweet.
+**NOTE:** Do NOT use reply for engagement search results — Twitter blocks API replies to tweets that don't mention us. Use quote tweet instead to add commentary.
 
-- Reply: `exec node skills/twitter-openclaw/bin/twclaw.js reply <tweet-url> "text" --yes`
+- Quote: `exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes`
 
 6. Log each action to `data/daily/YYYY-MM-DD/engagement_actions.md` (tweet URL, handle, action, 1-line summary — NO full tweet text)
 7. Confirm to Gilberts: "Done, [N] interactions executed"
@@ -179,8 +179,9 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 ### Engagement Types
 
 - **Like**: default action for relevant ERC-8004 content
-- **Retweet**: only for high-quality tweets that our followers would benefit from seeing
-- **Reply**: ONLY if `reply_settings` is `"everyone"` in the search results. If restricted, skip reply and just like/retweet. Replies must add value — a data point, insight, or clarification. Never generic "check us out" or "interesting!"
+- **Retweet**: for high-quality tweets that our followers would benefit from seeing
+- **Quote Tweet**: use instead of reply to add commentary. Quotes work via API and get better reach than replies. Use `exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes`
+- **Reply**: ONLY to tweets that mention @trust8004 (API restriction since Feb 2026 — replies to tweets that don't mention us are blocked by Twitter). Check mentions with `exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json` when Gilberts asks
 
 ### Key Accounts Watchlist
 
