@@ -39,7 +39,17 @@ Daily Data Drop, Changelog Update, Community Engagement.
 1. **Headline number**: `totals.registrations24h` new agents + `registrationsDeltaPct` vs yesterday
 2. **Per-chain breakdown**: top chains from `chains[]` sorted by `registrations24h`, show delta and trend
 3. **Verified endpoints**: `totals.verifiedEndpoints` total + `verifiedEndpointsDeltaAbs` new
-4. **Tag chains**: @ethereum @base @0xPolygon @arbitrum @Optimism (only chains with activity)
+4. **Tag chains** (MANDATORY): Always tag the Twitter handles of chains mentioned in the data. Only tag chains with activity:
+   - Ethereum → @ethereum
+   - Base → @base
+   - BNB Chain → @BNBCHAIN
+   - Polygon → @0xPolygon
+   - Arbitrum → @arbitrum
+   - Optimism → @Optimism
+   - Avalanche → @avax
+   - Gnosis → @gnosischain
+   - Celo → @CeloOrg
+   - Linea → @LineaBuild
 
 ### Tweet template (vary structure daily, never copy paste)
 
@@ -63,6 +73,8 @@ Base Sepolia: 19
 Arbitrum: 9, steady
 
 813 verified endpoints and climbing. who's building rn?
+
+@BNBCHAIN @ethereum @arbitrum
 ```
 
 ### Opener examples (rotate daily, never repeat two days in a row)
