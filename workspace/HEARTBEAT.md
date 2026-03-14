@@ -2,7 +2,7 @@
 
 ## Every Heartbeat Check
 
-1. **Check for pending Gilberts approvals** — if a draft was sent and Gilberts replied, create the Typefully draft
+1. **Check for pending Gilberts approvals** — if a draft was sent and Gilberts approved, post the tweet via twclaw
 
 ## Morning Routine (9:00 AM Chile, America/Santiago)
 

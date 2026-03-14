@@ -4,56 +4,26 @@
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
-- Typefully skill installed via clawhub
+- All tweets published directly via twclaw
 
-## Tool 1: Typefully (Publishing)
-
-### Free Tier Limits
-
-| Resource    | Limit           |
-| ----------- | --------------- |
-| Posts/month | **15**          |
-| Scheduled   | **3** at a time |
-| Drafts      | **5** at a time |
-
-- Do NOT create draft until Gilberts approves via Telegram
-- Check `typefully drafts:list` before creating — max 5
-- Alert Gilberts at 12/15 posts used
-- ALWAYS draft, NEVER publish directly. NEVER use `--now`
-
-### Commands
-
-```bash
-typefully config:show
-typefully social-sets:list
-typefully config:set-default <social_set_id>
-typefully drafts:create --text "Tweet content"
-typefully drafts:create --text $'1/ First\n\n\n\n2/ Second\n\n\n\n3/ Third'
-typefully drafts:list
-typefully drafts:list --status scheduled
-```
-
-### Draft Rules
-
-- Draft text must be **English only**
-- Threads: 4 line breaks between tweets, numbered `1/`, `2/`, `3/`
-- Save locally in `data/daily/YYYY-MM-DD/` or `data/weekly/YYYY-WNN/` before creating draft
-
-## Tool 2: twclaw (Twitter/X Interaction)
+## Tool 1: twclaw (Twitter/X — Post, Engage, Search)
 
 **Command:** `exec node skills/twitter-openclaw/bin/twclaw.js`
 
 ```bash
-exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" -n 10 --popular --json  # Search
-exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes                    # Like
-exec node skills/twitter-openclaw/bin/twclaw.js reply <tweet-url> "text" --yes            # Reply
-exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes                 # Retweet
 exec node skills/twitter-openclaw/bin/twclaw.js tweet "text" --yes                        # Post tweet
+exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" -n 10 --recent --json   # Search
+exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes                    # Like
+exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes                 # Retweet
+exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote tweet
 exec node skills/twitter-openclaw/bin/twclaw.js read <tweet-url>                          # Read (on-demand)
+exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json                     # Mentions (on-demand)
 ```
 
 Requires `TWITTER_BEARER_TOKEN` and `TWITTER_USER_ID`.
 All write actions need `--yes` flag. ALL interactions require Gilberts approval first.
+
+**Do NOT use `reply`** — Twitter API blocks replies to tweets that don't mention us (since Feb 2026). Use `quote` instead.
 
 ### Token Refresh
 
@@ -65,14 +35,13 @@ exec node scripts/twitter-refresh-token.mjs
 
 Then retry the original command. If refresh also fails, tell Gilberts to re-authorize.
 
-### API Budget (CRITICAL)
+### API Budget (automatic/heartbeat only — Gilberts requests override)
 
-- **1 search/day** (`"ERC-8004"`, `-n 10`). No weekend searches
-- **3 actions/day max** (like + reply + retweet combined)
+- **1 automatic search/day** (`"ERC-8004"`, `-n 10`). No weekend searches
+- **3 automatic actions/day max** (like + quote + retweet combined)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
-- Total: **max 4 API calls/day**
 
-## Tool 3: trust8004 API (Ecosystem Metrics)
+## Tool 2: trust8004 API (Ecosystem Metrics)
 
 ```bash
 exec node scripts/fetch-metrics.mjs
@@ -97,7 +66,7 @@ exec node scripts/fetch-changelog.mjs
 
 Returns JSON array of `{ date, version, type, title, description, highlights }`. Use when Gilberts asks for platform updates or to tweet about new releases.
 
-## Tool 4: Data Logging
+## Tool 3: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
@@ -130,5 +99,5 @@ Every file starts with `# [Type] — [Date]` header. Keep files lean: bullets, n
 ## Content Tips
 
 - Screenshots > raw links for engagement
-- Links in replies, never in main tweets
+- Links via quote tweet of your own tweet, never in main tweets
 - Use CHAINID:ID format consistently
