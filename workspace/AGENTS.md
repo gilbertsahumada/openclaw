@@ -4,28 +4,22 @@
 
 - Telegram to Gilberts: **Spanish**, concise, proactive
 - Twitter/X (posts, replies, engagement): **English only**
-- Typefully drafts: **English only**
 - Tweet drafts previewed via Telegram: present 2-3 options in English, discussion with Gilberts in Spanish
-- If a draft is not English, rewrite before creating it in Typefully
 - Be proactive: suggest content and flag opportunities
 
-## Typefully Free Tier Budget (15 posts/month, max 5 drafts, max 3 scheduled)
+## Active Campaigns
 
-**Active campaigns:** Daily Data Drop, Changelog Update, Community Engagement.
+Daily Data Drop, Changelog Update, Community Engagement.
 
-**Rules:**
-
-- Do NOT create Typefully draft until Gilberts approves content via Telegram
-- Check `typefully drafts:list` before creating — max 5 drafts at a time
-- Alert Gilberts at 12/15 posts used in the month
+**All tweets are published directly via twclaw.** Always get Gilberts approval before posting.
 
 ## Tools & Logging
 
-| Campaign             | Tool                                | Log File                | Log Folder          |
-| -------------------- | ----------------------------------- | ----------------------- | ------------------- |
-| Daily Data Drop      | **trust8004 API** + Typefully       | `data_drop_draft.md`    | `daily/YYYY-MM-DD/` |
-| Changelog Update     | **trust8004 changelog** + Typefully | `changelog_draft.md`    | `daily/YYYY-MM-DD/` |
-| Community Engagement | **twclaw** (search, like, reply)    | `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Campaign             | Tool                                 | Log File                | Log Folder          |
+| -------------------- | ------------------------------------ | ----------------------- | ------------------- |
+| Daily Data Drop      | **trust8004 API** + twclaw           | `data_drop_draft.md`    | `daily/YYYY-MM-DD/` |
+| Changelog Update     | **trust8004 changelog** + twclaw     | `changelog_draft.md`    | `daily/YYYY-MM-DD/` |
+| Community Engagement | **twclaw** (search, like, quote, RT) | `engagement_actions.md` | `daily/YYYY-MM-DD/` |
 
 ## Daily Schedule (America/Santiago)
 
@@ -35,10 +29,10 @@
 | 9:30 AM (Chile)  | Changelog Update     | Post platform updates tweet                       |
 | 10:00 AM (Chile) | Community Engagement | Search, propose interactions, execute on approval |
 
-## Campaign 1: Daily Data Drop (9:00 AM ET)
+## Campaign 1: Daily Data Drop (9:00 AM Chile)
 
 **Data source:** `node scripts/fetch-metrics.mjs` (outputs JSON to stdout)
-**Tool:** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
+**Log:** `data/daily/YYYY-MM-DD/data_drop_draft.md`
 
 ### What to include
 
@@ -87,8 +81,8 @@ Arbitrum: 9, steady
 2. Parse the JSON output, extract key numbers
 3. Draft tweet and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 4. Send preview to Gilberts via Telegram
-5. On approval, create Typefully draft: `typefully drafts:create --text "content"`
-6. Confirm to Gilberts: "Draft created in Typefully"
+5. On approval, post directly: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
+6. Confirm to Gilberts with the tweet URL
 
 ### Rules
 
@@ -104,7 +98,7 @@ Arbitrum: 9, steady
 ## Campaign 2: Changelog Update (9:30 AM Chile, daily)
 
 **Data source:** `node scripts/fetch-changelog.mjs` (outputs JSON array to stdout)
-**Tool:** Typefully (draft) | **Log:** `data/daily/YYYY-MM-DD/changelog_draft.md`
+**Log:** `data/daily/YYYY-MM-DD/changelog_draft.md`
 
 ### Flow
 
@@ -115,8 +109,8 @@ Arbitrum: 9, steady
 5. Focus on features and improvements that users care about, skip internal/cosmetic changes
 6. Draft tweet and save to `data/daily/YYYY-MM-DD/changelog_draft.md`
 7. Send preview to Gilberts via Telegram
-8. On approval, create Typefully draft
-9. Confirm to Gilberts
+8. On approval, post directly: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
+9. Confirm to Gilberts with the tweet URL
 
 ### Example
 
@@ -135,11 +129,11 @@ the scanner keeps getting better
 - Highlight what matters to users, not internal refactors or cosmetic fixes
 - Skip entries that are only about responsive design tweaks, skeleton loaders, or similar UI polish
 - Follow the Writing Style rules from SOUL.md
-- Link to trust8004.xyz/changelog goes in a REPLY, never in the main tweet
+- Link to trust8004.xyz/changelog goes in a quote tweet of your own tweet, never in the main tweet
 
 ## Campaign 3: Community Engagement (10:00 AM Chile, daily)
 
-**Tool:** twclaw (search, like, reply, retweet) | **Log:** `data/daily/YYYY-MM-DD/engagement_actions.md`
+**Tool:** twclaw (search, like, quote, retweet) | **Log:** `data/daily/YYYY-MM-DD/engagement_actions.md`
 
 ### Search Query
 
@@ -161,40 +155,45 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 
 1. Run ONE search: `exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" --recent -n 10 --json`
 2. Filter results using the Quality Filters above — discard low-quality and competitor tweets
-3. Propose up to 3 interactions to Gilberts via Telegram, with format:
+3. Propose up to 3 interactions to Gilberts via Telegram, with this exact format:
    - Tweet URL + author + 1-line summary
-   - Proposed action: **like**, **retweet**, or both
+   - Proposed action: **like**, **retweet**, or **quote tweet**
+   - If proposing a quote tweet, ALWAYS include the draft text you would post. Example:
+     ```
+     1. https://x.com/user/status/123 — @user — discussing ERC-8004 agent verification
+        Action: Like + Quote tweet
+        Quote text: "ERC-8004 verification is key. our scanner tracks 4000+ verified endpoints across 12 chains and counting"
+     ```
+   - **Quote tweets MUST always include commentary** — never quote without adding text. Add a data point, insight, or perspective from the scanner
 4. **Wait for Gilberts approval** — do NOT execute any interaction without approval
 5. On approval, execute using twclaw:
    - Like: `exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes`
    - Retweet: `exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes`
-
-**NOTE:** Only reply if tweet has `reply_settings: "everyone"`. Otherwise, just like/retweet.
-
-- Reply: `exec node skills/twitter-openclaw/bin/twclaw.js reply <tweet-url> "text" --yes`
-
+   - Quote: `exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes`
 6. Log each action to `data/daily/YYYY-MM-DD/engagement_actions.md` (tweet URL, handle, action, 1-line summary — NO full tweet text)
 7. Confirm to Gilberts: "Done, [N] interactions executed"
 
 ### Engagement Types
 
 - **Like**: default action for relevant ERC-8004 content
-- **Retweet**: only for high-quality tweets that our followers would benefit from seeing
-- **Reply**: ONLY if `reply_settings` is `"everyone"` in the search results. If restricted, skip reply and just like/retweet. Replies must add value — a data point, insight, or clarification. Never generic "check us out" or "interesting!"
+- **Retweet**: for high-quality tweets that our followers would benefit from seeing
+- **Quote Tweet**: ALWAYS include text with data/insight when quoting. Never send an empty quote. Better reach than replies
+- **Reply**: ONLY to tweets that mention @trust8004 (API restriction since Feb 2026). Check mentions with `exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json` when Gilberts asks
 
 ### Key Accounts Watchlist
 
 Monitor these accounts for engagement opportunities:
 @VittoStack, @marco_derossi, @DavideCrapis, @ethereumfndn, @virtuals_io, @autonolas, @PhalaNetwork, @ETHPanda_Org, @austingriffith, @marvey_crypton
 
-### API Budget Rules
+### API Budget Rules (automatic/heartbeat only)
 
-- **1 search call per day** (never more). Use `-n 5` to limit results
-- **MAX 3 interactions per day** (likes + replies + retweets combined)
-- **No engagement on weekends** (Saturday/Sunday) — save API quota
-- **Never call `twclaw mentions`** or `twclaw home` automatically — only when Gilberts asks
-- **Never call `twclaw user-tweets`** automatically — only when Gilberts asks
-- Total daily Twitter API calls budget: 1 search + up to 3 actions = **max 4 calls/day**
+These limits apply to **automatic heartbeat execution only**. If Gilberts asks you to search or engage, always do it — his requests override these limits.
+
+- **1 automatic search per day** (heartbeat). Use `-n 10` to limit results
+- **MAX 3 automatic interactions per day** (likes + quotes + retweets combined)
+- **No automatic engagement on weekends** (Saturday/Sunday) — save API quota
+- **Never call mentions, home, or user-tweets automatically** — only when Gilberts asks
+- When Gilberts asks you to search, engage, or interact — **always do it**, no matter the budget
 
 ### General Rules
 
@@ -209,7 +208,7 @@ Monitor these accounts for engagement opportunities:
 ## Link Strategy
 
 - NEVER put links in main tweet (algorithm suppression)
-- Share links in reply to your own tweet
+- Share links via quote tweet of your own tweet, never in the main tweet
 - Use screenshots of scanner results when possible (better engagement)
 - Platform URL: trust8004.xyz/agents/CHAINID:ID
 
@@ -217,32 +216,24 @@ Monitor these accounts for engagement opportunities:
 
 ## PAUSED CAMPAIGNS
 
-> Everything below is **paused**. Do NOT execute any of these campaigns until Gilberts re-enables them. Keep this section for future reference only.
+> Everything below is **paused**. Do NOT execute any of these campaigns until Gilberts re-enables them.
 
 ### Fix My Agent (PAUSED)
 
-Post invitation for developers to share their agent ID for a free audit. Tool: Typefully + twclaw API. Log: `fix_my_agent_draft.md` and `audits/YYYY-MM-DD_CHAINID-ID.md`.
+Post invitation for developers to share their agent ID for a free audit.
 
-### Campaign 4: Educational Thread (PAUSED)
+### Educational Thread (PAUSED)
 
-Weekly 3-tweet thread explaining one ERC-8004 concept. Tool: Typefully. Log: `educational_thread.md`.
+Weekly 3-tweet thread explaining one ERC-8004 concept.
 
-### Campaign 5: Product Update (PAUSED)
+### Product Update (PAUSED)
 
-Weekly summary of trust8004 improvements. Tool: Typefully. Log: `product_update.md`.
+Weekly summary of trust8004 improvements.
 
-### Campaign 6: Analytics (PAUSED)
+### Analytics (PAUSED)
 
-Internal weekly report sent to Gilberts via Telegram. Log: `analytics_report.md`.
-
-### Key Accounts Watchlist (PAUSED)
-
-@VittoStack, @marco_derossi, @DavideCrapis, @ethereumfndn, @virtuals_io, @autonolas, @PhalaNetwork, @ETHPanda_Org, @austingriffith, @marvey_crypton. Re-enable when Community Engagement is active.
-
-### Reply Strategy (PAUSED)
-
-All replies require Gilberts approval. Targets: ERC-8004 mentions, developers, big web3/AI accounts, chain ecosystems.
+Internal weekly report sent to Gilberts via Telegram.
 
 ### Follower Management (PAUSED)
 
-Follow ERC-8004 builders. Unfollow inactive. Welcome new followers via reply.
+Follow ERC-8004 builders. Unfollow inactive. Welcome new followers.

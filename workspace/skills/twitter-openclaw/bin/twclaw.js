@@ -926,7 +926,7 @@ async function commandTrending(flags) {
 
 async function commandTweet(args, flags) {
   ensureArgs("tweet", args, 1);
-  const text = args.join(" ").trim();
+  const text = args.join(" ").trim().replace(/\\n/g, "\n");
   if (!text) throw new CliError("Tweet text is required.");
 
   if (flags.media) {
@@ -958,7 +958,7 @@ async function commandTweet(args, flags) {
 async function commandReply(args, flags) {
   ensureArgs("reply", args, 2);
   const tweetId = parseTweetId(args[0]);
-  const text = args.slice(1).join(" ").trim();
+  const text = args.slice(1).join(" ").trim().replace(/\\n/g, "\n");
   if (!text) throw new CliError("Reply text is required.");
 
   await confirmWrite("reply", `About to reply to ${tweetId}:\n\"${text}\"`, flags);
@@ -986,7 +986,7 @@ async function commandReply(args, flags) {
 async function commandQuote(args, flags) {
   ensureArgs("quote", args, 2);
   const tweetId = parseTweetId(args[0]);
-  const text = args.slice(1).join(" ").trim();
+  const text = args.slice(1).join(" ").trim().replace(/\\n/g, "\n");
   if (!text) throw new CliError("Quote text is required.");
 
   await confirmWrite("quote", `About to quote ${tweetId}:\n\"${text}\"`, flags);
