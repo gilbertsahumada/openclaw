@@ -166,8 +166,16 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 ### Flow
 
 1. Run ONE search: `exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" --recent -n 10 --json`
-2. Filter results using the Quality Filters above — discard low-quality and competitor tweets
-3. Propose up to 3 interactions to Gilberts via Telegram, with this exact format:
+   - If the search fails (401, 429, or any error), report the **exact error** to Gilberts and stop
+   - If you get a 401, first try refreshing the token: `exec node scripts/twitter-refresh-token.mjs`, then retry the search
+2. **Report raw results to Gilberts**: Tell him how many tweets the search returned, e.g. "Search returned 7 tweets"
+3. Filter results using the Quality Filters above. **Report each discard reason to Gilberts**, e.g.:
+   - "Discarded @user1 — too old (12 days ago)"
+   - "Discarded @user2 — only 1 like, no engagement"
+   - "Discarded @user3 — mentions @8004_scan (competitor)"
+   - "Discarded @user4 — bot account, 3 followers"
+4. If no tweets passed: tell Gilberts "Search returned N tweets, but none passed quality filters: [reasons]"
+5. Propose up to 3 interactions to Gilberts via Telegram, with this exact format:
    - Tweet URL + author + 1-line summary
    - Proposed action: **like**, **retweet**, or **quote tweet**
    - If proposing a quote tweet, ALWAYS include the draft text you would post. Example:
@@ -177,13 +185,14 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
         Quote text: "ERC-8004 verification is key. our scanner tracks 4000+ verified endpoints across 12 chains and counting"
      ```
    - **Quote tweets MUST always include commentary** — never quote without adding text. Add a data point, insight, or perspective from the scanner
-4. **Wait for Gilberts approval** — do NOT execute any interaction without approval
-5. On approval, execute using twclaw:
+6. **Wait for Gilberts approval** — do NOT execute any interaction without approval
+7. On approval, execute using twclaw:
    - Like: `exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes`
    - Retweet: `exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes`
    - Quote: `exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes`
-6. Log each action to `data/daily/YYYY-MM-DD/engagement_actions.md` (tweet URL, handle, action, 1-line summary — NO full tweet text)
-7. Confirm to Gilberts: "Done, [N] interactions executed"
+8. If any command fails, report the exact error to Gilberts (include the full error message)
+9. Log each action to `data/daily/YYYY-MM-DD/engagement_actions.md` (tweet URL, handle, action, 1-line summary — NO full tweet text)
+10. Confirm to Gilberts: "Done, [N] interactions executed"
 
 ### Engagement Types
 
