@@ -31,7 +31,7 @@ Daily Data Drop, Community Engagement, Ecosystem Posts.
 | 1:00 PM (Chile)  | Ecosystem Post #1    | Post ecosystem/educational tweet                  |
 | 5:00 PM (Chile)  | Ecosystem Post #2    | Post engagement/opinion tweet                     |
 
-**After every tweet**: share the tweet URL in the Telegram channel using the `sendMessage` action with `to: "TELEGRAM_CHANNEL_ID"` (configured in env var `TELEGRAM_CHANNEL_ID`). Read the env var to get the channel ID.
+**After every tweet**: share the tweet URL in the Telegram group `@trust8004` using `sendMessage` action. All Telegram group messages must be **in English**.
 
 ## Campaign 1: Daily Data Drop (9:00 AM Chile)
 
@@ -110,7 +110,7 @@ Arbitrum: 9, steady
 3. Draft tweet and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 4. Send preview to Gilberts via Telegram
 5. On approval, post directly: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
-6. Share the tweet URL in the Telegram channel using `sendMessage` action (to: env var `TELEGRAM_CHANNEL_ID`)
+6. Share the tweet URL in `@trust8004` Telegram group via `sendMessage`
 7. Confirm to Gilberts with the tweet URL
 
 ### Rules

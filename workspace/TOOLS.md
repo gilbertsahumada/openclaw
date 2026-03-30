@@ -44,12 +44,14 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 
 ## Tool 2: Telegram Channel (share tweets)
 
-Use the built-in `sendMessage` action to share tweet URLs in the Telegram channel:
+Use the built-in `sendMessage` action to share tweet URLs in the Telegram group:
 
-- `to`: read from env var `TELEGRAM_CHANNEL_ID`
-- `content`: the tweet URL (and optionally a short caption)
+- `to`: `@trust8004`
+- `content`: the tweet URL + short caption **in English**
 
 **Use after every tweet** to share it with the community.
+When Gilberts says "publica en telegram" or "comparte en telegram", send to `@trust8004`.
+All messages to the Telegram group must be **in English** (same as Twitter).
 
 ## Tool 3: trust8004 API (Ecosystem Metrics)
 

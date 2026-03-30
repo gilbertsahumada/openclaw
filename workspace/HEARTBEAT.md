@@ -28,7 +28,7 @@
 ### After every approved tweet
 
 - [ ] Post via twclaw
-- [ ] Share tweet URL in Telegram channel: `sendMessage action (to: env var TELEGRAM_CHANNEL_ID) "TWEET_URL"`
+- [ ] Share tweet URL in Telegram group `@trust8004` via `sendMessage` (in English)
 - [ ] Confirm to Gilberts
 
 ## Anti-Repetition Rules
