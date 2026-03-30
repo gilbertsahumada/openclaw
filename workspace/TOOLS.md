@@ -42,16 +42,14 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 - **3 automatic actions/day max** (like + quote + retweet combined)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
 
-## Tool 2: Telegram Channel Post
+## Tool 2: Telegram Channel (share tweets)
 
-```bash
-exec node scripts/telegram-channel-post.mjs "message text here"
-```
+Use the built-in `sendMessage` action to share tweet URLs in the Telegram channel:
 
-Posts a message to the trust8004 Telegram channel. Use HTML formatting.
-Requires `TELEGRAM_BOT_TOKEN` (already configured) and `TELEGRAM_CHANNEL_ID`.
+- `to`: read from env var `TELEGRAM_CHANNEL_ID`
+- `content`: the tweet URL (and optionally a short caption)
 
-**Use after every tweet**: share the tweet URL in the channel so the community can engage.
+**Use after every tweet** to share it with the community.
 
 ## Tool 3: trust8004 API (Ecosystem Metrics)
 
