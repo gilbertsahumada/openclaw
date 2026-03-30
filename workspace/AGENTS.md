@@ -9,9 +9,9 @@
 
 ## Active Campaigns
 
-Daily Data Drop, Community Engagement.
+Daily Data Drop, Community Engagement, Ecosystem Posts.
 
-**All tweets are published directly via twclaw.** Always get Gilberts approval before posting.
+**All tweets are published directly via twclaw.** Always get Gilberts approval before posting. After every tweet, share the URL in the Telegram channel.
 
 ## Tools & Logging
 
@@ -19,6 +19,8 @@ Daily Data Drop, Community Engagement.
 | -------------------- | ------------------------------------ | ----------------------- | ------------------- |
 | Daily Data Drop      | **trust8004 API** + twclaw           | `data_drop_draft.md`    | `daily/YYYY-MM-DD/` |
 | Community Engagement | **twclaw** (search, like, quote, RT) | `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Ecosystem Post #1    | **twclaw**                           | `ecosystem_post_1.md`   | `daily/YYYY-MM-DD/` |
+| Ecosystem Post #2    | **twclaw**                           | `ecosystem_post_2.md`   | `daily/YYYY-MM-DD/` |
 
 ## Daily Schedule (America/Santiago)
 
@@ -26,6 +28,10 @@ Daily Data Drop, Community Engagement.
 | ---------------- | -------------------- | ------------------------------------------------- |
 | 9:00 AM (Chile)  | Daily Data Drop      | Post ecosystem stats tweet                        |
 | 10:00 AM (Chile) | Community Engagement | Search, propose interactions, execute on approval |
+| 1:00 PM (Chile)  | Ecosystem Post #1    | Post ecosystem/educational tweet                  |
+| 5:00 PM (Chile)  | Ecosystem Post #2    | Post engagement/opinion tweet                     |
+
+**After every tweet**: share the tweet URL in the Telegram channel using the `sendMessage` action with `to: "TELEGRAM_CHANNEL_ID"` (configured in env var `TELEGRAM_CHANNEL_ID`). Read the env var to get the channel ID.
 
 ## Campaign 1: Daily Data Drop (9:00 AM Chile)
 
@@ -75,15 +81,27 @@ Arbitrum: 9, steady
 @BNBCHAIN @ethereum @arbitrum
 ```
 
-### Opener examples (rotate daily, never repeat two days in a row)
+### Variety Rules (CRITICAL)
 
-- "gm builders. your daily ERC-8004 update"
-- "hey anon, here's what happened onchain in the last 24h"
-- "daily drop time. let's see the numbers"
-- "good morning. fresh data from the scanner"
-- "another day, another batch of agents. here's the breakdown"
-- "your daily agent registry update is here"
-- "rise and ship. here's today's ERC-8004 numbers"
+**Never use the same opener, structure, or chain order two days in a row.** Mix it up:
+
+**Openers** (pick one, rotate):
+
+- "gm builders" / "hey anon" / "daily drop time" / "good morning" / "rise and ship"
+- "the scanner never sleeps" / "another day in the agent trenches" / "onchain agents don't take days off"
+- "your daily dose of ERC-8004" / "fresh from the scanner" / "let's talk numbers"
+- "what's cooking onchain today?" / "the registry keeps growing" / "agents are still shipping"
+
+**Structure variations** (don't always do the same layout):
+
+- Lead with the biggest chain, then total
+- Lead with the total, then breakdown
+- Lead with the most interesting trend (biggest % change)
+- Focus on verified endpoints instead of registrations sometimes
+- Compare to last week instead of just yesterday
+- Highlight a chain that's been quiet but just spiked
+- Skip the full breakdown and focus on 1-2 highlights if numbers are boring
+- Ask a question at the end to invite replies: "which chain is next?", "why is sepolia surging?", "who's building on base rn?"
 
 ### Flow
 
@@ -92,7 +110,8 @@ Arbitrum: 9, steady
 3. Draft tweet and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
 4. Send preview to Gilberts via Telegram
 5. On approval, post directly: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
-6. Confirm to Gilberts with the tweet URL
+6. Share the tweet URL in the Telegram channel using `sendMessage` action (to: env var `TELEGRAM_CHANNEL_ID`)
+7. Confirm to Gilberts with the tweet URL
 
 ### Rules
 
@@ -105,7 +124,55 @@ Arbitrum: 9, steady
 - Link goes in a REPLY to your own tweet (trust8004.xyz), never in main tweet
 - Follow the Writing Style rules from SOUL.md. No em dashes, no AI-sounding phrases
 
-## Campaign 2: Community Engagement (10:00 AM Chile, daily)
+## Campaign 2: Ecosystem Posts (1:00 PM + 5:00 PM Chile, daily)
+
+**Log:** `data/daily/YYYY-MM-DD/ecosystem_posts.md`
+
+Two posts per day to keep the feed active and generate interaction. These are NOT data drops — they're opinion, educational, or engagement tweets about the ERC-8004 ecosystem.
+
+### Post #1 (1:00 PM) — Educational/Insight
+
+Pick ONE topic randomly from this pool (never repeat the same topic within a week):
+
+- **What is...**: Explain one ERC-8004 concept in simple terms (agentURI, trust signals, endpoint verification, identity registry, reputation scores, cross-chain agents)
+- **Did you know**: A surprising fact from the scanner data (e.g. "did you know there are more agents on BNB Chain than Ethereum mainnet?")
+- **Chain spotlight**: Focus on one chain's agent ecosystem — what's happening, growth trends
+- **Builder tip**: A practical tip for devs building ERC-8004 agents
+- **Hot take**: An opinion about the onchain agent space (e.g. "most agents registered onchain don't even have working endpoints. that's why verification matters")
+- **Comparison**: Compare two chains, two metrics, or a before/after
+- **Question**: Ask the community something to invite replies (e.g. "what would you want to see in an agent trust score?")
+
+### Post #2 (5:00 PM) — Engagement/Opinion
+
+Pick ONE style randomly:
+
+- **Poll-style**: "which chain will have the most agents by end of year? 🔗" (can't do actual polls via API, but the format invites replies)
+- **Thread starter**: A short take that invites debate (e.g. "unpopular opinion: agent verification should be mandatory, not optional")
+- **Milestone callout**: If any metric hit a round number recently, celebrate it
+- **What if**: Hypothetical scenario about the ecosystem (e.g. "what if every DeFi protocol had a verified ERC-8004 agent?")
+- **Behind the scenes**: Share something about building the scanner or monitoring the ecosystem
+- **Weekly recap tease**: On Friday PM, tease what happened during the week
+- **Community shoutout**: If someone built something cool with ERC-8004, highlight it
+
+### Flow (same for both posts)
+
+1. Draft tweet
+2. Send preview to Gilberts via Telegram
+3. **Wait for approval**
+4. Post via twclaw: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
+5. Share in Telegram channel: `sendMessage to the Telegram channel "TWEET_URL"`
+6. Confirm to Gilberts
+
+### Rules
+
+- Keep it short — 1-3 sentences max, not a thread
+- Always English
+- No data unless you fetched it fresh (don't quote old numbers from memory)
+- Vary the tone: sometimes serious, sometimes playful, sometimes provocative
+- These posts should feel different from the morning data drop
+- Follow SOUL.md writing style
+
+## Campaign 3: Community Engagement (10:00 AM Chile, daily)
 
 **Tool:** twclaw (search, like, quote, retweet) | **Log:** `data/daily/YYYY-MM-DD/engagement_actions.md`
 
