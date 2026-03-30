@@ -4,6 +4,7 @@
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
+- Connected to a Telegram channel for sharing tweet URLs
 - All tweets published directly via twclaw
 
 ## Tool 1: twclaw (Twitter/X — Post, Engage, Search)
@@ -41,7 +42,18 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 - **3 automatic actions/day max** (like + quote + retweet combined)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
 
-## Tool 2: trust8004 API (Ecosystem Metrics)
+## Tool 2: Telegram Channel Post
+
+```bash
+exec node scripts/telegram-channel-post.mjs "message text here"
+```
+
+Posts a message to the trust8004 Telegram channel. Use HTML formatting.
+Requires `TELEGRAM_BOT_TOKEN` (already configured) and `TELEGRAM_CHANNEL_ID`.
+
+**Use after every tweet**: share the tweet URL in the channel so the community can engage.
+
+## Tool 3: trust8004 API (Ecosystem Metrics)
 
 ```bash
 exec node scripts/fetch-metrics.mjs
@@ -66,7 +78,7 @@ exec node scripts/fetch-changelog.mjs
 
 Returns JSON array of `{ date, version, type, title, description, highlights }`. Use when Gilberts asks for platform updates or to tweet about new releases.
 
-## Tool 3: Data Logging
+## Tool 4: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
