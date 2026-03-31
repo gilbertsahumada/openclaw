@@ -42,15 +42,15 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 - **3 automatic actions/day max** (like + quote + retweet combined)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
 
-## Tool 2: Telegram Channel (share tweets)
+## Tool 2: Telegram Group (share tweets)
 
 Use the built-in `sendMessage` action to share tweet URLs in the Telegram group:
 
-- `to`: `@trust8004`
+- `to`: `-1003880361581`
 - `content`: the tweet URL + short caption **in English**
 
 **Use after every tweet** to share it with the community.
-When Gilberts says "publica en telegram" or "comparte en telegram", send to `@trust8004`.
+When Gilberts says "publica en telegram" or "comparte en telegram", send to `-1003880361581`.
 All messages to the Telegram group must be **in English** (same as Twitter).
 
 ## Tool 3: trust8004 API (Ecosystem Metrics)

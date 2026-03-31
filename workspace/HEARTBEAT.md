@@ -2,7 +2,7 @@
 
 ## Every Heartbeat Check
 
-1. **Check for pending Gilberts approvals** — if a draft was sent and Gilberts approved, post the tweet via twclaw and share URL in Telegram channel
+1. **Check for pending Gilberts approvals** — if a draft was sent and Gilberts approved, post the tweet via twclaw and share URL in Telegram group (`-1003880361581`)
 
 ## Scheduled Tasks (America/Santiago)
 
@@ -28,7 +28,7 @@
 ### After every approved tweet
 
 - [ ] Post via twclaw
-- [ ] Share tweet URL in Telegram group `@trust8004` via `sendMessage` (in English)
+- [ ] Share tweet URL in Telegram group `-1003880361581` via `sendMessage` (in English)
 - [ ] Confirm to Gilberts
 
 ## Anti-Repetition Rules
