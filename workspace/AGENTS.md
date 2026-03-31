@@ -15,12 +15,12 @@ Daily Data Drop, Community Engagement, Ecosystem Posts.
 
 ## Tools & Logging
 
-| Campaign             | Tool                                 | Log File                | Log Folder          |
-| -------------------- | ------------------------------------ | ----------------------- | ------------------- |
-| Daily Data Drop      | **trust8004 API** + twclaw           | `data_drop_draft.md`    | `daily/YYYY-MM-DD/` |
-| Community Engagement | **twclaw** (search, like, quote, RT) | `engagement_actions.md` | `daily/YYYY-MM-DD/` |
-| Ecosystem Post #1    | **twclaw**                           | `ecosystem_post_1.md`   | `daily/YYYY-MM-DD/` |
-| Ecosystem Post #2    | **twclaw**                           | `ecosystem_post_2.md`   | `daily/YYYY-MM-DD/` |
+| Campaign             | Tool                          | Log File                | Log Folder          |
+| -------------------- | ----------------------------- | ----------------------- | ------------------- |
+| Daily Data Drop      | **trust8004 API** + twclaw    | `data_drop_draft.md`    | `daily/YYYY-MM-DD/` |
+| Community Engagement | **twclaw** (search, like, RT) | `engagement_actions.md` | `daily/YYYY-MM-DD/` |
+| Ecosystem Post #1    | **twclaw**                    | `ecosystem_post_1.md`   | `daily/YYYY-MM-DD/` |
+| Ecosystem Post #2    | **twclaw**                    | `ecosystem_post_2.md`   | `daily/YYYY-MM-DD/` |
 
 ## Daily Schedule (America/Santiago)
 
@@ -174,7 +174,7 @@ Pick ONE style randomly:
 
 ## Campaign 3: Community Engagement (10:00 AM Chile, daily)
 
-**Tool:** twclaw (search, like, quote, retweet) | **Log:** `data/daily/YYYY-MM-DD/engagement_actions.md`
+**Tool:** twclaw (search, like, retweet) | **Log:** `data/daily/YYYY-MM-DD/engagement_actions.md`
 
 ### Search Query
 
@@ -204,21 +204,26 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
    - "Discarded @user3 — mentions @8004_scan (competitor)"
    - "Discarded @user4 — bot account, 3 followers"
 4. If no tweets passed: tell Gilberts "Search returned N tweets, but none passed quality filters: [reasons]"
-5. Propose up to 3 interactions to Gilberts via Telegram, with this exact format:
-   - Tweet URL + author + 1-line summary
-   - Proposed action: **like**, **retweet**, or **quote tweet**
-   - If proposing a quote tweet, ALWAYS include the draft text you would post. Example:
-     ```
-     1. https://x.com/user/status/123 — @user — discussing ERC-8004 agent verification
-        Action: Like + Quote tweet
-        Quote text: "ERC-8004 verification is key. our scanner tracks 4000+ verified endpoints across 12 chains and counting"
-     ```
-   - **Quote tweets MUST always include commentary** — never quote without adding text. Add a data point, insight, or perspective from the scanner
+5. Propose up to 3 tweets to Gilberts via Telegram with this exact format per tweet:
+   - **Clickable URL** (so Gilberts can open and interact manually)
+   - Author handle
+   - 1-line summary of what the tweet is about
+   - Suggested comment idea (a short phrase Gilberts could reply with)
+   - Proposed automatic action: **like**, **retweet**, or both
+
+   Example:
+
+   ```
+   1. https://x.com/user/status/123
+      @user — discussing agent verification across L2s
+      💬 Suggested reply: "we track 4000+ verified endpoints, verification is key"
+      ✅ Auto: Like + RT
+   ```
+
 6. **Wait for Gilberts approval** — do NOT execute any interaction without approval
 7. On approval, execute using twclaw:
    - Like: `exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes`
    - Retweet: `exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes`
-   - Quote: `exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes`
 8. If any command fails, report the exact error to Gilberts (include the full error message)
 9. Log each action to `data/daily/YYYY-MM-DD/engagement_actions.md` (tweet URL, handle, action, 1-line summary — NO full tweet text)
 10. Confirm to Gilberts: "Done, [N] interactions executed"
@@ -227,8 +232,8 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 
 - **Like**: default action for relevant ERC-8004 content
 - **Retweet**: for high-quality tweets that our followers would benefit from seeing
-- **Quote Tweet**: ALWAYS include text with data/insight when quoting. Never send an empty quote. Better reach than replies
-- **Reply**: ONLY to tweets that mention @trust8004 (API restriction since Feb 2026). Check mentions with `exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json` when Gilberts asks
+- **Quote Tweet**: ONLY when quoting your OWN tweets or tweets that mention @trust8004 (API restriction since Feb 2026 blocks quotes to other tweets)
+- **Reply**: ONLY to tweets that mention @trust8004 (same API restriction). Check mentions with `exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json` when Gilberts asks
 
 ### Key Accounts Watchlist
 
@@ -240,7 +245,7 @@ Monitor these accounts for engagement opportunities:
 These limits apply to **automatic heartbeat execution only**. If Gilberts asks you to search or engage, always do it — his requests override these limits.
 
 - **1 automatic search per day** (heartbeat). Use `-n 10` to limit results
-- **MAX 3 automatic interactions per day** (likes + quotes + retweets combined)
+- **MAX 3 automatic interactions per day** (likes + retweets combined)
 - **No automatic engagement on weekends** (Saturday/Sunday) — save API quota
 - **Never call mentions, home, or user-tweets automatically** — only when Gilberts asks
 - When Gilberts asks you to search, engage, or interact — **always do it**, no matter the budget
@@ -258,7 +263,7 @@ These limits apply to **automatic heartbeat execution only**. If Gilberts asks y
 ## Link Strategy
 
 - NEVER put links in main tweet (algorithm suppression)
-- Share links via quote tweet of your own tweet, never in the main tweet
+- NEVER put links in main tweet (algorithm suppression)
 - Use screenshots of scanner results when possible (better engagement)
 - Platform URL: trust8004.xyz/agents/CHAINID:ID
 

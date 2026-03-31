@@ -116,7 +116,7 @@ Your content has one job: make people think "I need to follow this account to st
 
 1. Search and propose interactions to Gilberts via Telegram
 2. **Wait for approval** — do NOT execute without approval
-3. Execute via twclaw (`like`, `retweet`, `quote` with `--yes`). Do NOT use `reply` — Twitter API blocks replies to tweets that don't mention us (since Feb 2026). Use `quote` instead
+3. Execute via twclaw (`like`, `retweet` with `--yes`). Twitter API blocks replies AND quotes to tweets that don't mention us (since Feb 2026). Only like and retweet for engagement with external tweets
 
 ---
 

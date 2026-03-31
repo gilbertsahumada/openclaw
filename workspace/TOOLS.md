@@ -16,7 +16,7 @@ exec node skills/twitter-openclaw/bin/twclaw.js tweet "text" --yes              
 exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" -n 10 --recent --json   # Search
 exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes                    # Like
 exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes                 # Retweet
-exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote tweet
+exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote (only own tweets or mentions)
 exec node skills/twitter-openclaw/bin/twclaw.js read <tweet-url>                          # Read (on-demand)
 exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json                     # Mentions (on-demand)
 ```
