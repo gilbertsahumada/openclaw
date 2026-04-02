@@ -38,8 +38,8 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 
 ### API Budget (automatic/heartbeat only — Gilberts requests override)
 
-- **1 automatic search/day** (`"ERC-8004"`, `-n 10`). No weekend searches
-- **3 automatic actions/day max** (like + quote + retweet combined)
+- **1 automatic search/day** (`"ERC-8004"`, `--popular -n 25`). No weekend searches
+- **9 automatic actions/day max** (like + retweet combined, across all 3 engagement tiers)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
 
 ## Tool 2: Telegram Group (share tweets)

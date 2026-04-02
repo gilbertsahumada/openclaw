@@ -33,6 +33,8 @@ Daily Data Drop, Community Engagement, Ecosystem Posts.
 
 **After every tweet**: share the tweet URL in the Telegram group `-1003880361581` using `sendMessage` action. All Telegram group messages must be **in English**.
 
+**CRITICAL — Telegram delivery verification**: After calling `sendMessage`, you MUST check the response for `ok: true` and a valid `messageId`. If the response does not contain these, the message was NOT delivered. Report the failure to Gilberts immediately. NEVER assume a message was sent without confirming the response. If you cannot verify delivery, tell Gilberts explicitly: "No pude confirmar que el mensaje llegó al grupo."
+
 ## Campaign 1: Daily Data Drop (9:00 AM Chile)
 
 **Data source:** `node scripts/fetch-metrics.mjs` (outputs JSON to stdout)
@@ -194,30 +196,64 @@ Before proposing any tweet for engagement, it MUST pass ALL these filters:
 
 ### Flow
 
-1. Run ONE search: `exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" --recent -n 10 --json`
+1. Run ONE search: `exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" --popular -n 25 --json`
+   - Using `--popular` sorts results by engagement score (likes + retweets + replies)
+   - Using `-n 25` fetches more results to have enough variety for tiered selection
    - If the search fails (401, 429, or any error), report the **exact error** to Gilberts and stop
    - If you get a 401, first try refreshing the token: `exec node scripts/twitter-refresh-token.mjs`, then retry the search
-2. **Report raw results to Gilberts**: Tell him how many tweets the search returned, e.g. "Search returned 7 tweets"
+2. **Report raw results to Gilberts**: Tell him how many tweets the search returned, e.g. "Search returned 18 tweets"
 3. Filter results using the Quality Filters above. **Report each discard reason to Gilberts**, e.g.:
    - "Discarded @user1 — too old (12 days ago)"
    - "Discarded @user2 — only 1 like, no engagement"
    - "Discarded @user3 — mentions @8004_scan (competitor)"
    - "Discarded @user4 — bot account, 3 followers"
 4. If no tweets passed: tell Gilberts "Search returned N tweets, but none passed quality filters: [reasons]"
-5. Propose up to 3 tweets to Gilberts via Telegram with this exact format per tweet:
+5. **Categorize and propose up to 9 tweets** to Gilberts via Telegram, organized in 3 tiers:
+
+   **Tier 1 — High engagement** (top 3 by likes+RT+replies): best candidates for RT and visibility
+   **Tier 2 — Medium engagement** (next 3): good candidates for like + selective RT
+   **Tier 3 — Low engagement** (next 3): worth a like to support smaller builders
+
+   Use this exact format per tweet:
    - **Clickable URL** (so Gilberts can open and interact manually)
    - Author handle
-   - 1-line summary of what the tweet is about
+   - Engagement stats: likes, RTs, replies
+   - 1-line summary of what the tweet is about **in the tweet's original language**
    - Suggested comment idea (a short phrase Gilberts could reply with)
    - Proposed automatic action: **like**, **retweet**, or both
 
    Example:
 
    ```
+   🔥 HIGH ENGAGEMENT
+
    1. https://x.com/user/status/123
       @user — discussing agent verification across L2s
+      📊 42 likes, 12 RT, 8 replies
       💬 Suggested reply: "we track 4000+ verified endpoints, verification is key"
       ✅ Auto: Like + RT
+
+   2. https://x.com/user2/status/456
+      @user2 — nuevo framework para agentes ERC-8004 en Base
+      📊 28 likes, 6 RT, 3 replies
+      💬 Suggested reply: "interesante, ya lo trackeamos en trust8004"
+      ✅ Auto: Like + RT
+
+   📈 MEDIUM ENGAGEMENT
+
+   3. https://x.com/user3/status/789
+      @user3 — comparing agent standards
+      📊 10 likes, 3 RT, 2 replies
+      💬 Suggested reply: "solid comparison"
+      ✅ Auto: Like
+
+   🌱 LOW ENGAGEMENT (support builders)
+
+   7. https://x.com/user7/status/111
+      @user7 — first ERC-8004 agent deployed
+      📊 3 likes, 0 RT, 1 reply
+      💬 Suggested reply: "welcome to the ecosystem"
+      ✅ Auto: Like
    ```
 
 6. **Wait for Gilberts approval** — do NOT execute any interaction without approval
@@ -244,11 +280,20 @@ Monitor these accounts for engagement opportunities:
 
 These limits apply to **automatic heartbeat execution only**. If Gilberts asks you to search or engage, always do it — his requests override these limits.
 
-- **1 automatic search per day** (heartbeat). Use `-n 10` to limit results
-- **MAX 3 automatic interactions per day** (likes + retweets combined)
+- **1 automatic search per day** (heartbeat). Use `--popular -n 25` to get engagement-sorted results
+- **MAX 9 automatic interactions per day** (likes + retweets combined, across all 3 tiers)
 - **No automatic engagement on weekends** (Saturday/Sunday) — save API quota
 - **Never call mentions, home, or user-tweets automatically** — only when Gilberts asks
 - When Gilberts asks you to search, engage, or interact — **always do it**, no matter the budget
+
+### Language Rules for Engagement (CRITICAL)
+
+- **Never translate tweet content.** Present each tweet's summary in the tweet's original language
+- If a tweet is in English, the summary and suggested reply must be in English
+- If a tweet is in Spanish, the summary and suggested reply must be in Spanish
+- If a tweet is in any other language, keep the summary in that language
+- **Do NOT mix languages** within a single tweet summary. Match the tweet's language exactly
+- Your communication with Gilberts (context, explanations, tier labels) stays in Spanish as always
 
 ### General Rules
 
