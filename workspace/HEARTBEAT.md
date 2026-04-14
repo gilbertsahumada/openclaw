@@ -8,10 +8,11 @@
 
 **IMPORTANT: Before running any task, check if the corresponding file already exists for today in `data/daily/YYYY-MM-DD/`. If it exists, the task is DONE — do NOT re-run it.**
 
-### 9:00 AM — Daily Data Drop
+### 9:00 AM — Daily Data Drop (AUTO-PUBLISH, NO APPROVAL)
 
 - [ ] (Monday) **Data cleanup**: Delete `data/daily/` folders older than 14 days
-- [ ] Check if `data/daily/YYYY-MM-DD/data_drop_draft.md` exists. If NOT, fetch metrics, draft tweet, save, send preview to Gilberts. If exists, skip
+- [ ] Check if `data/daily/YYYY-MM-DD/data_drop_published.md` exists. If NOT: fetch metrics, draft tweet, save draft, POST IMMEDIATELY via twclaw, share URL in Telegram group, notify Gilberts with tweet URL. If exists, skip
+- [ ] **On ANY failure** (fetch-metrics error, twclaw error, Telegram error): send full error message to Gilberts via Telegram in Spanish. Format: `❌ Data Drop falló en paso [X]: [error exacto]`. Do NOT retry until next day unless Gilberts asks
 
 ### 10:00 AM — Community Engagement
 

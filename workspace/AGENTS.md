@@ -11,7 +11,14 @@
 
 Daily Data Drop, Community Engagement, Ecosystem Posts.
 
-**All tweets are published directly via twclaw.** Always get Gilberts approval before posting. After every tweet, share the URL in the Telegram group (`-1003880361581`).
+**Publishing rules:**
+
+- **Daily Data Drop (metrics)** → AUTO-PUBLISH without approval. No preview step. Post immediately after fetching data.
+- **Ecosystem Posts + Community Engagement** → require Gilberts approval before posting.
+
+After every tweet (auto or approved), share the URL in the Telegram group (`-1003880361581`).
+
+**Failure reporting (CRITICAL):** If ANY step fails (fetch-metrics, twclaw, Telegram sendMessage, token refresh), send the exact error to Gilberts via Telegram in Spanish immediately. Format: `❌ [Campaign] falló en [step]: [error]`. Never fail silently.
 
 ## Tools & Logging
 
@@ -105,19 +112,27 @@ Arbitrum: 9, steady
 - Skip the full breakdown and focus on 1-2 highlights if numbers are boring
 - Ask a question at the end to invite replies: "which chain is next?", "why is sepolia surging?", "who's building on base rn?"
 
-### Flow
+### Flow (AUTO-PUBLISH, NO APPROVAL)
 
 1. Fetch data: `exec node scripts/fetch-metrics.mjs`
+   - If fails → send `❌ Data Drop falló en fetch-metrics: [error exacto]` to Gilberts. STOP.
 2. Parse the JSON output, extract key numbers
-3. Draft tweet and save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
-4. Send preview to Gilberts via Telegram
-5. On approval, post directly: `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
-6. Share the tweet URL in Telegram group `-1003880361581` via `sendMessage`
-7. Confirm to Gilberts with the tweet URL
+   - If parse fails → send `❌ Data Drop falló en parse JSON: [error]` to Gilberts. STOP.
+3. Draft tweet, save to `data/daily/YYYY-MM-DD/data_drop_draft.md`
+4. Post IMMEDIATELY (no approval): `exec node skills/twitter-openclaw/bin/twclaw.js tweet "content" --yes`
+   - If fails with 401 → run `exec node scripts/twitter-refresh-token.mjs`, retry once
+   - If still fails → send `❌ Data Drop falló en twclaw tweet: [error exacto]` to Gilberts. STOP.
+5. Save tweet URL + timestamp to `data/daily/YYYY-MM-DD/data_drop_published.md` (this file marks the task done)
+6. Share tweet URL in Telegram group `-1003880361581` via `sendMessage` (in English)
+   - If sendMessage fails or `ok != true` → send `❌ Data Drop publicado pero falló share en grupo: [error]` to Gilberts with tweet URL anyway
+7. Notify Gilberts: `✅ Data Drop publicado: [tweet URL]`
 
 ### Rules
 
-- If `fetch-metrics.mjs` fails, report the error to Gilberts via Telegram and skip the Data Drop for the day. Do NOT use web search or any other method to obtain the metrics
+- If `fetch-metrics.mjs` fails, report the exact error to Gilberts via Telegram and skip the Data Drop for the day. Do NOT use web search or any other method to obtain the metrics
+- **Never publish without fresh metrics.** If fetch fails, do NOT post anything
+- **Fail loud, not silent.** Every failure must reach Gilberts in Spanish with the exact error string
+- **Success is defined by `data_drop_published.md` existing** with tweet URL inside. If file missing, task is not done
 - Numbers must match the API response exactly. Never round, estimate, or make up data
 - Vary the opening. Don't start with the same phrase two days in a row
 - Show trend context: "up from yesterday", "slight dip", "steady", "biggest day this week"
