@@ -29,14 +29,18 @@ After every tweet (auto or approved), share the URL in the Telegram group (`-100
 | Ecosystem Post #1    | **twclaw**                    | `ecosystem_post_1.md`   | `daily/YYYY-MM-DD/` |
 | Ecosystem Post #2    | **twclaw**                    | `ecosystem_post_2.md`   | `daily/YYYY-MM-DD/` |
 
-## Daily Schedule (America/Santiago)
+## Daily Schedule (America/Santiago — Chile LOCAL TIME, NOT UTC)
 
-| Time             | Campaign             | Action                                            |
-| ---------------- | -------------------- | ------------------------------------------------- |
-| 9:00 AM (Chile)  | Daily Data Drop      | Post ecosystem stats tweet                        |
-| 10:00 AM (Chile) | Community Engagement | Search, propose interactions, execute on approval |
-| 1:00 PM (Chile)  | Ecosystem Post #1    | Post ecosystem/educational tweet                  |
-| 5:00 PM (Chile)  | Ecosystem Post #2    | Post engagement/opinion tweet                     |
+**CRITICAL:** All times below are **Chile local time** (`America/Santiago`). The server/container clock is likely UTC. Before firing any scheduled task, convert current time to Chile time first. Use `TZ="America/Santiago" date` or compute from UTC (Chile = UTC-3 standard, UTC-4 during DST).
+
+| Time (Chile)   | Campaign             | Action                                            |
+| -------------- | -------------------- | ------------------------------------------------- |
+| 9:00 AM Chile  | Daily Data Drop      | AUTO-POST ecosystem stats tweet (no approval)     |
+| 10:00 AM Chile | Community Engagement | Search, propose interactions, execute on approval |
+| 1:00 PM Chile  | Ecosystem Post #1    | Draft + approval + post educational tweet         |
+| 5:00 PM Chile  | Ecosystem Post #2    | Draft + approval + post opinion tweet             |
+
+The `YYYY-MM-DD` folder in `data/daily/` must be **Chile local date**, not UTC date. Example: if it's `02:00 UTC` on `2026-04-15`, in Chile it's still `22:00 on 2026-04-14` — use `2026-04-14` as folder name.
 
 **After every tweet**: share the tweet URL in the Telegram group `-1003880361581` using `sendMessage` action. All Telegram group messages must be **in English**.
 
