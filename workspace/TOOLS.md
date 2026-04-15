@@ -4,6 +4,7 @@
 
 - Running on Dokploy (Docker container)
 - Connected via Telegram for communication with Gilberts
+- Connected to a Telegram channel for sharing tweet URLs
 - All tweets published directly via twclaw
 
 ## Tool 1: twclaw (Twitter/X — Post, Engage, Search)
@@ -15,9 +16,10 @@ exec node skills/twitter-openclaw/bin/twclaw.js tweet "text" --yes              
 exec node skills/twitter-openclaw/bin/twclaw.js search "ERC-8004" -n 10 --recent --json   # Search
 exec node skills/twitter-openclaw/bin/twclaw.js like <tweet-url> --yes                    # Like
 exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes                 # Retweet
-exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote tweet
+exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote (only own tweets or mentions)
 exec node skills/twitter-openclaw/bin/twclaw.js read <tweet-url>                          # Read (on-demand)
 exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json                     # Mentions (on-demand)
+exec node skills/twitter-openclaw/bin/twclaw.js user-tweets @handle -n 10 --json          # Last N tweets from a specific account (on-demand)
 ```
 
 Requires `TWITTER_BEARER_TOKEN` and `TWITTER_USER_ID`.
@@ -37,11 +39,22 @@ Then retry the original command. If refresh also fails, tell Gilberts to re-auth
 
 ### API Budget (automatic/heartbeat only — Gilberts requests override)
 
-- **1 automatic search/day** (`"ERC-8004"`, `-n 10`). No weekend searches
-- **3 automatic actions/day max** (like + quote + retweet combined)
+- **1 automatic search/day** (`"ERC-8004"`, `--popular -n 25`). No weekend searches
+- **9 automatic actions/day max** (like + retweet combined, across all 3 engagement tiers)
 - **NEVER call automatically**: mentions, home, user-tweets — only when Gilberts asks
 
-## Tool 2: trust8004 API (Ecosystem Metrics)
+## Tool 2: Telegram Group (share tweets)
+
+Use the built-in `sendMessage` action to share tweet URLs in the Telegram group:
+
+- `to`: `-1003880361581`
+- `content`: the tweet URL + short caption **in English**
+
+**Use after every tweet** to share it with the community.
+When Gilberts says "publica en telegram" or "comparte en telegram", send to `-1003880361581`.
+All messages to the Telegram group must be **in English** (same as Twitter).
+
+## Tool 3: trust8004 API (Ecosystem Metrics)
 
 ```bash
 exec node scripts/fetch-metrics.mjs
@@ -66,7 +79,7 @@ exec node scripts/fetch-changelog.mjs
 
 Returns JSON array of `{ date, version, type, title, description, highlights }`. Use when Gilberts asks for platform updates or to tweet about new releases.
 
-## Tool 3: Data Logging
+## Tool 4: Data Logging
 
 All data saved in `data/`. Active log: `data/daily/YYYY-MM-DD/data_drop_draft.md`.
 
