@@ -333,6 +333,68 @@ These limits apply to **automatic heartbeat execution only**. If Gilberts asks y
 
 ---
 
+## Campaign 4: Exploit Monitor (On-Demand — triggered by "busca exploits")
+
+**Tool:** twclaw `user-tweets` | **Log:** none (on-demand only, no daily file)
+
+### Monitored Accounts
+
+- @DBCrypt0
+- @peckshield
+
+### Trigger
+
+When Gilberts says **"busca exploits"** (or any close variant like "busca hacks", "exploits"), execute this flow immediately.
+
+### Flow
+
+1. For each monitored account, fetch last 10 tweets:
+
+   ```
+   exec node skills/twitter-openclaw/bin/twclaw.js user-tweets @DBCrypt0 -n 10 --json
+   exec node skills/twitter-openclaw/bin/twclaw.js user-tweets @peckshield -n 10 --json
+   ```
+
+   - If any account returns a 401 → refresh token: `exec node scripts/twitter-refresh-token.mjs`, then retry once
+   - If still fails → report exact error to Gilberts and continue with the other accounts that worked
+   - If ALL accounts fail → report and stop
+
+2. **Analyze each tweet** for exploit/hack signals. A tweet is flagged if it contains ANY of these signals (case-insensitive):
+   - Keywords: `exploit`, `hack`, `hacked`, `breach`, `attack`, `drained`, `vulnerability`, `vuln`, `rug`, `flash loan`, `flash-loan`, `reentrancy`, `reentrant`, `compromised`, `stolen`, `$xm stolen`, `million drained`, `funds lost`, `critical bug`, `0day`, `zero-day`, `incident`, `postmortem`, `post-mortem`, `loss of funds`
+   - Patterns: dollar amounts + negative action (e.g. "$2M drained", "lost $500K"), protocol name + "hacked" or "exploited"
+   - Account context: @peckshield and @DBCrypt0 frequently use shorthand — treat "PeckShieldAlert" style phrases and any mention of a protocol + ❌/⚠️/🚨 as a flag signal
+
+3. **Report to Gilberts** via Telegram (in Spanish), organized by account:
+
+   ```
+   🚨 Exploit Monitor — [fecha Chile]
+
+   @peckshield (X de 10 tweets flaggeados):
+   1. [tweet URL] — [1-line summary in English]
+   2. [tweet URL] — [1-line summary in English]
+
+   @DBCrypt0 (X de 10 tweets flaggeados):
+   1. [tweet URL] — [1-line summary in English]
+
+   Sin flags: [list any accounts with 0 flagged tweets]
+   ```
+
+   - If ZERO tweets flagged across all accounts: "No se encontraron exploits ni hacks en los últimos 10 tweets de los cuentas monitoreadas."
+   - Tweet summaries: always in English (match tweet language), keep to 1 line max
+   - Include tweet URL so Gilberts can open directly
+
+4. **Wait for Gilberts instructions** — do NOT like, retweet, or interact with any flagged tweet unless Gilberts explicitly asks
+
+### Rules
+
+- On-demand ONLY — never run this automatically in the heartbeat
+- Do NOT store full tweet text (X policy) — log only URL + 1-line summary if Gilberts asks to save
+- If a tweet is ambiguous (could be exploit-related but not sure), include it with a `⚠️ posible` label rather than silently dropping it
+- This tool does NOT auto-post or take any Twitter action — it is read-only and reporting only
+- `user-tweets` is NOT counted against the daily API budget — Gilberts requests override budget limits
+
+---
+
 ## PAUSED CAMPAIGNS
 
 > Everything below is **paused**. Do NOT execute any of these campaigns until Gilberts re-enables them.

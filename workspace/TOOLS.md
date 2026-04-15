@@ -19,6 +19,7 @@ exec node skills/twitter-openclaw/bin/twclaw.js retweet <tweet-url> --yes       
 exec node skills/twitter-openclaw/bin/twclaw.js quote <tweet-url> "text" --yes            # Quote (only own tweets or mentions)
 exec node skills/twitter-openclaw/bin/twclaw.js read <tweet-url>                          # Read (on-demand)
 exec node skills/twitter-openclaw/bin/twclaw.js mentions -n 10 --json                     # Mentions (on-demand)
+exec node skills/twitter-openclaw/bin/twclaw.js user-tweets @handle -n 10 --json          # Last N tweets from a specific account (on-demand)
 ```
 
 Requires `TWITTER_BEARER_TOKEN` and `TWITTER_USER_ID`.
